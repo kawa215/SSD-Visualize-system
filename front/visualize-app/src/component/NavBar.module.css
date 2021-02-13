@@ -1,0 +1,23 @@
+.NavBar {
+    height: 45px;
+    background-color: #1A73E8;
+    color: white;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    padding: 5px 0px 0px 30px;
+    font-family: "SF Pro JP", "SF Pro Text", "Apple TP", "Myriad Set Pro",
+    "SF Pro Icons", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3",
+    "メイリオ", "Meiryo", "ＭＳ Ｐゴシック", "Helvetica Neue", "Helvetica",
+    "Arial", sans-serif;
+    font-weight: 2px;
+    font-size: 19px;
+}
+
+.NavBar a {
+    display: block;
+    width: 200px;
+    height: 30px;
+    color: white;
+    text-align: center;
+    padding: 6px 2px 0px;
+    text-decoration: none;
+}
