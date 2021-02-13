@@ -1,9 +1,12 @@
-import './App.css';
 import SelectionData from './component/SelectionData.js'
+import NavBar from './component/NavBar.js'
+
 function App() {
   return (
     <div className="App">
-      <SelectionData></SelectionData>
+      <NavBar></NavBar>
+      
+      {/* <SelectionData></SelectionData> */}
     </div>
   );
 }
