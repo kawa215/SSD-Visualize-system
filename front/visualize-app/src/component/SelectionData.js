@@ -5,6 +5,7 @@ export default class SelectionData extends Component {
   constructor(props) {
     super(props);
   }
+  handleChange = e => setVal(e.target.value);
   render() {
     return (
       <div className={styles.SelectionData}>
@@ -42,6 +43,22 @@ export default class SelectionData extends Component {
           <option value="dawn/dusk">dawn/dusk</option>
           <option value="undefined">undefined</option>
         </select>
+        <label>
+          <input
+            type="radio"
+            value="right"
+            onChange={handleChange}
+          />
+          正検出
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="wrong"
+            onChange={handleChange}
+          />
+          誤検出
+        </label>
       </div>
     );
   }
