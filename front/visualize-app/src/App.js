@@ -5,6 +5,8 @@ function App() {
   return (
     <div className="App">
       <NavBar></NavBar>
+      <SelectionData></SelectionData>
+
       
       {/* <SelectionData></SelectionData> */}
     </div>
