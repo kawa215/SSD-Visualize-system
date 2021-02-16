@@ -4,20 +4,24 @@ import styles from "./SelectionData.module.css";
 export default class SelectionData extends Component {
   constructor(props) {
     super(props);
-    this.state = { value: "" };
+    this.state = { radio: [{ right: "" }, { wrong: "" }] };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChangeRight = this.handleChangeRight.bind(this);
+    this.handleChangeWrong = this.handleChangeWrong.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ value: event.target.value });
+  handleChangeRight(event) {
+    this.setState({ radio, right: event.target.value });
   }
 
-  handleSubmit(event) {
-    alert("A name was submitted: " + this.state.value);
-    event.preventDefault();
+  handleChangeWrong(event) {
+    this.setState({ radio, wrong: event.target.value });
   }
+
+  // handleSubmit(event) {
+  //   alert("A name was submitted: " + this.state.value);
+  //   event.preventDefault();
+  // }
 
   render() {
     return (
@@ -57,11 +61,19 @@ export default class SelectionData extends Component {
           <option value="undefined">undefined</option>
         </select>
         <label>
-          <input type="radio" value="right" onChange={handleChange} />
+          <input
+            type="radio"
+            value={this.state.radio.right}
+            onChange={handleChangeRight}
+          />
           正検出
         </label>
         <label>
-          <input type="radio" value="wrong" onChange={handleChange} />
+          <input
+            type="radio"
+            value={this.state.radio.wrong}
+            onChange={handleChangeWrong}
+          />
           誤検出
         </label>
       </div>
