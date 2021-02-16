@@ -11,7 +11,7 @@ export default class SelectionData extends Component {
   }
 
   handleChangeRight(event) {
-    this.setState({ radio, right: event.target.value });
+    this.setState({ radio:{right: event.target.value });
   }
 
   handleChangeWrong(event) {
