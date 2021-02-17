@@ -4,14 +4,14 @@ import styles from "./SelectionData.module.css";
 export default class SelectionData extends Component {
   constructor(props) {
     super(props);
-    this.state = { radio: [{ right: "" }, { wrong: "" }] };
+    this.state = { radio: [{ right: '' }, { wrong: '' }] };
 
     this.handleChangeRight = this.handleChangeRight.bind(this);
     this.handleChangeWrong = this.handleChangeWrong.bind(this);
   }
 
   handleChangeRight(event) {
-    this.setState({ radio:{right: event.target.value });
+    this.setState(radio.right : event.target.value );
   }
 
   handleChangeWrong(event) {
