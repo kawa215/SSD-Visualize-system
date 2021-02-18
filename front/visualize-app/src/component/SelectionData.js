@@ -4,18 +4,13 @@ import styles from "./SelectionData.module.css";
 export default class SelectionData extends Component {
   constructor(props) {
     super(props);
-    this.state = { radio: [{ right: '' }, { wrong: '' }] };
+    this.state = { radio: "" };
 
-    this.handleChangeRight = this.handleChangeRight.bind(this);
-    this.handleChangeWrong = this.handleChangeWrong.bind(this);
+    this.handleChangeRadio = this.handleChangeRadio.bind(this);
   }
 
-  handleChangeRight(event) {
-    this.setState(radio.right : event.target.value );
-  }
-
-  handleChangeWrong(event) {
-    this.setState({ radio, wrong: event.target.value });
+  handleChangeRadio(event) {
+    this.setState({ radio: event.target.value });
   }
 
   // handleSubmit(event) {
@@ -63,19 +58,27 @@ export default class SelectionData extends Component {
         <label>
           <input
             type="radio"
-            value={this.state.radio.right}
-            onChange={handleChangeRight}
+            name="detect"
+            value="正検出"
+            onChange={this.handleChangeRadio}
           />
           正検出
         </label>
         <label>
           <input
             type="radio"
-            value={this.state.radio.wrong}
-            onChange={handleChangeWrong}
+            name="detect"
+            value="誤検出"
+            onChange={this.handleChangeRadio}
           />
           誤検出
         </label>
+        <a
+          href="#"
+          onclick="console.log('The link was clicked.'); return false"
+        >
+          全ての条件を解除
+        </a>
       </div>
     );
   }
