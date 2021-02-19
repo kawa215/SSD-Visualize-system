@@ -1,12 +1,33 @@
 import React, { Component } from "react";
+import ImageDataService from "../services/Image.service";
 import styles from "./SelectionData.module.css";
 
 export default class SelectionData extends Component {
   constructor(props) {
     super(props);
-    this.state = { radio: "" };
+    this.state = {
+      radio: "",
+      iamges: [],
+    };
 
     this.handleChangeRadio = this.handleChangeRadio.bind(this);
+  }
+
+  componentDidMount() {
+    this.retrieveTutorials();
+  }
+
+  retrieveImages() {
+    ImageDataService.getAll()
+      .then((response) => {
+        this.setState({
+          images: response.data,
+        });
+        console.log(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   handleChangeRadio(event) {
