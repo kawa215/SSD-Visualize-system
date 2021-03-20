@@ -8,14 +8,29 @@ export default class SelectionData extends Component {
     this.state = {
       radio: "",
       iamges: [],
+      whether: [],
+      Scene: [],
+      Timeofday: [],
     };
 
     this.handleChangeRadio = this.handleChangeRadio.bind(this);
   }
 
+
   componentDidMount() {
-    this.retrieveTutorials();
+    this.retrieveImages();
   }
+
+  // onChangeSearchWhether(e) {
+  //   const searchWether = e.target.value;
+  //   //含まれない
+  //   if(whether.indexOf(searchWether) != -1)
+  //   {    this.setState((prevState) => ({
+  //     whether: [...prevState.whether, searchWether],
+  //   }));
+  // }
+
+  // }
 
   retrieveImages() {
     ImageDataService.getAll()
@@ -43,7 +58,7 @@ export default class SelectionData extends Component {
     return (
       <div className={styles.SelectionData}>
         メタタグ絞り込み
-        <select>
+        <select onChange={this.onChangeSearchTitle}>
           <option selected value>
             Whether
           </option>

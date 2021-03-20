@@ -1,9 +1,9 @@
 import http from "../http-common";
 
 class ImageDataService {
-  getAll() {
-    return http.get("/images");
-  }
+  // getAll() {
+  //   return http.get("/images");
+  // }
 
   get(id) {
     return http.get(`/images/${id}`);
