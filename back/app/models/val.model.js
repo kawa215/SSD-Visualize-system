@@ -15,6 +15,6 @@ module.exports = mongoose => {
       return object;
     });
   
-    const Image = mongoose.model("image", schema);
-    return Image;
+    const Val = mongoose.model("val", schema);
+    return Val;
   };
