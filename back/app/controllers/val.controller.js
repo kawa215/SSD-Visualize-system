@@ -34,13 +34,14 @@ const Val = db.vals;
 exports.findAll = (req, res) => {
   console.log("find all");
   const title = req.query.title;
-  var condition = title
-    ? { title: { $regex: new RegExp(title), $options: "i" } }
-    : {};
-  console.log("condition:" + condition);
-  // var condition = { name: "b1c66a42-6f7d68ca.jpg" };
+  // var condition = title
+  //   ? { title: { $regex: new RegExp(title), $options: "i" } }
+  //   : {};
+  // console.log("condition:" + condition);
+  var condition = {name:1,attributes:1,_id:0};
+  var numofsheets = 21;
   // limit で数を制限
-  Val.find(condition).limit(1)
+  Val.find({},condition).limit(numofsheets)
     .then((data) => {
       res.send(data);
       console.log("data:" + data);
