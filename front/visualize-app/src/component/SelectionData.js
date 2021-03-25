@@ -7,7 +7,7 @@ export default class SelectionData extends Component {
     super(props);
     this.state = {
       radio: "",
-      iamges: [],
+      images: [],
       whether: [],
       Scene: [],
       Timeofday: [],
@@ -15,7 +15,6 @@ export default class SelectionData extends Component {
 
     this.handleChangeRadio = this.handleChangeRadio.bind(this);
   }
-
 
   componentDidMount() {
     this.retrieveImages();
@@ -33,12 +32,12 @@ export default class SelectionData extends Component {
   // }
 
   retrieveImages() {
+    console.log("aaa");
     ImageDataService.getAll()
       .then((response) => {
         this.setState({
           images: response.data,
         });
-        console.log(response.data);
       })
       .catch((e) => {
         console.log(e);
@@ -59,7 +58,7 @@ export default class SelectionData extends Component {
       <div className={styles.SelectionData}>
         メタタグ絞り込み
         <select onChange={this.onChangeSearchTitle}>
-          <option selected value>
+          <option selected value="">
             Whether
           </option>
           <option value="rainy">rainy</option>
@@ -71,7 +70,7 @@ export default class SelectionData extends Component {
           <option value="foggy">foggy</option>
         </select>
         <select>
-          <option selected value>
+          <option selected value="">
             Scene
           </option>
           <option value="tunnel">tunnel</option>
@@ -83,7 +82,7 @@ export default class SelectionData extends Component {
           <option value="highway">highway</option>
         </select>
         <select>
-          <option selected value>
+          <option selected value="">
             Timeofday
           </option>
           <option value="daytime">daytime</option>
@@ -109,12 +108,18 @@ export default class SelectionData extends Component {
           />
           誤検出
         </label>
-        <a
-          href="#"
-          onclick="console.log('The link was clicked.'); return false"
-        >
-          全ての条件を解除
-        </a>
+        <a href="#">全ての条件を解除</a>
+        <div>
+          {this.state.images.map((image) => {
+            return (
+              <div>
+                {image.name}:
+                {image.attributes.weather}
+              </div>
+            );
+          })}
+        </div>
+        {this.state.radio}
       </div>
     );
   }
