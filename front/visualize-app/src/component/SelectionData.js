@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import ImageDataService from "../services/Image.service";
 import styles from "./SelectionData.module.css";
-
+import ImageView from "./ImageView"
 export default class SelectionData extends Component {
   constructor(props) {
     super(props);
     this.state = {
       radio: "",
       images: [],
-      whether: [],
+      wheather: [],
       Scene: [],
       Timeofday: [],
     };
@@ -109,6 +109,13 @@ export default class SelectionData extends Component {
           誤検出
         </label>
         <a href="#">全ての条件を解除</a>
+        {
+          this.state.images.map((image) => {
+            return(
+              <ImageView imageName={image.name}></ImageView>
+            );
+          })
+        }
         <div>
           {this.state.images.map((image) => {
             return (
