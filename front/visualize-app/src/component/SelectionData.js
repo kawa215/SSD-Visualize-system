@@ -1,19 +1,26 @@
 import React, { Component } from "react";
 import ImageDataService from "../services/Image.service";
 import styles from "./SelectionData.module.css";
-import ImageView from "./ImageView"
+import ImageView from "./ImageView";
 export default class SelectionData extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      weather: "",
+      scene: "",
+      timeofday: "",
       radio: "",
       images: [],
-      wheather: [],
-      Scene: [],
-      Timeofday: [],
+      weathers: [],
+      scenes: [],
+      timeofdays: [],
     };
 
     this.handleChangeRadio = this.handleChangeRadio.bind(this);
+    this.handleChangeWeather = this.handleChangeWeather.bind(this);
+    this.handleChangeScene = this.handleChangeScene.bind(this);
+    this.handleChangeTimeofday = this.handleChangeTimeofday.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -44,8 +51,65 @@ export default class SelectionData extends Component {
       });
   }
 
+  existsSameValue(a) {
+    var s = new Set(a);
+    return s.size != a.length;
+  }
+
+  checkCondition(condition, newelement) {
+    //重複チェック
+    var cloneCondition = [...condition];
+    cloneCondition.push(newelement);
+    if (this.existsSameValue(cloneCondition)) return true;
+  }
+
   handleChangeRadio(event) {
     this.setState({ radio: event.target.value });
+  }
+
+  handleChangeWeather(event) {
+    var val = event.target.value;
+    this.setState({ weather: val });
+
+    //重複しないなら末尾に追加
+    if (!this.checkCondition(this.state.weathers, val)) {
+      this.setState({
+        weathers: [...this.state.weathers, val],
+      });
+    }
+  }
+
+  handleChangeScene(event) {
+    var val = event.target.value;
+    this.setState({ scene: val });
+
+    //重複しないなら末尾に追加
+    if (!this.checkCondition(this.state.scenes, val)) {
+      this.setState({
+        scenes: [...this.state.scenes, val],
+      });
+    }
+  }
+
+  handleChangeTimeofday(event) {
+    var val = event.target.value;
+    this.setState({ timeofday: val });
+
+    //重複しないなら末尾に追加
+    if (!this.checkCondition(this.state.timeofdays, val)) {
+      this.setState({
+        timeofdays: [...this.state.timeofdays, val],
+      });
+    }
+  }
+
+  handleClick(e) {
+    e.preventDefault();
+    this.setState({
+      weathers: [],
+      scenes: [],
+      timeofdays: [],
+    });
   }
 
   // handleSubmit(event) {
@@ -57,7 +121,7 @@ export default class SelectionData extends Component {
     return (
       <div className={styles.SelectionData}>
         メタタグ絞り込み
-        <select onChange={this.onChangeSearchTitle}>
+        <select value={this.state.weather} onChange={this.handleChangeWeather}>
           <option selected value="">
             Whether
           </option>
@@ -69,19 +133,38 @@ export default class SelectionData extends Component {
           <option value="party cloudy">party cloudy</option>
           <option value="foggy">foggy</option>
         </select>
-        <select>
+        {/* {this.state.weather} */}
+        <div>
+          {this.state.weathers.map((weather) => {
+            return <div>{weather}</div>;
+          })}
+        </div>
+        <div>
+          {this.state.timeofdays.map((weather) => {
+            return <div>{weather}</div>;
+          })}
+        </div>
+        <div>
+          {this.state.scenes.map((weather) => {
+            return <div>{weather}</div>;
+          })}
+        </div>
+        <select value={this.state.scene} onChange={this.handleChangeScene}>
           <option selected value="">
             Scene
           </option>
           <option value="tunnel">tunnel</option>
-          <option value="residential<">residential</option>
+          <option value="residential">residential</option>
           <option value="parking lot">parking lot</option>
           <option value="undefined">undefined</option>
           <option value="city street">city street</option>
           <option value="gas stations">gas stations</option>
           <option value="highway">highway</option>
         </select>
-        <select>
+        <select
+          value={this.state.timeofday}
+          onChange={this.handleChangeTimeofday}
+        >
           <option selected value="">
             Timeofday
           </option>
@@ -90,6 +173,7 @@ export default class SelectionData extends Component {
           <option value="dawn/dusk">dawn/dusk</option>
           <option value="undefined">undefined</option>
         </select>
+        適用済みフィルター
         <label>
           <input
             type="radio"
@@ -108,24 +192,21 @@ export default class SelectionData extends Component {
           />
           誤検出
         </label>
-        <a href="#">全ての条件を解除</a>
-        {
-          this.state.images.map((image) => {
-            return(
-              <ImageView imageName={image.name}></ImageView>
-            );
-          })
-        }
-        <div>
+        <a href="#" onClick={this.handleClick}>
+          全ての条件を解除
+        </a>
+        {/* {this.state.images.map((image) => {
+          return <ImageView imageName={image.name}></ImageView>;
+        })} */}
+        {/* <div>
           {this.state.images.map((image) => {
             return (
               <div>
-                {image.name}:
-                {image.attributes.weather}
+                {image.name}:{image.attributes.weather}
               </div>
             );
           })}
-        </div>
+        </div> */}
         {this.state.radio}
       </div>
     );
