@@ -4,6 +4,11 @@ class ImageDataService {
   getAll() {
     return http.get("/vals");
   }
+  getVals(weathers, scenes, timeofdays) {
+    console.log("getvals:"+weathers);
+    
+    return http.get("/vals/conditions", weathers, scenes, timeofdays);
+  }
 
   get(id) {
     return http.get(`/vals/${id}`);

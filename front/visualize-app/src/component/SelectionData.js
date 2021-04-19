@@ -21,6 +21,7 @@ export default class SelectionData extends Component {
     this.handleChangeScene = this.handleChangeScene.bind(this);
     this.handleChangeTimeofday = this.handleChangeTimeofday.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.retrieveImagesOnCondition = this.retrieveImagesOnCondition.bind(this);
   }
 
   componentDidMount() {
@@ -39,7 +40,6 @@ export default class SelectionData extends Component {
   // }
 
   retrieveImages() {
-    console.log("aaa");
     ImageDataService.getAll()
       .then((response) => {
         this.setState({
@@ -49,6 +49,26 @@ export default class SelectionData extends Component {
       .catch((e) => {
         console.log(e);
       });
+  }
+
+  retrieveImagesOnCondition(val) {
+    //配列取り出し
+    var cloneWeathers = [...this.state.weathers, val];
+    var cloneScenes = [...this.state.scenes];
+    var cloneTimeofdays = [...this.state.timeofdays];
+    console.log(cloneWeathers);
+    // this.setState({ test: cloneWeathers });
+    // this.setState(
+    //   cloneWeathers.map((weather)=>{return {test: [...this.state.test,weather]}})
+    // );
+    ImageDataService.getVals(cloneWeathers, cloneScenes, cloneTimeofdays)
+      .then((response) => {
+        this.setState({ images: response.data });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    //条件に合わせて取得
   }
 
   existsSameValue(a) {
@@ -76,6 +96,7 @@ export default class SelectionData extends Component {
       this.setState({
         weathers: [...this.state.weathers, val],
       });
+      this.retrieveImagesOnCondition(val);
     }
   }
 
@@ -88,6 +109,7 @@ export default class SelectionData extends Component {
       this.setState({
         scenes: [...this.state.scenes, val],
       });
+      this.retrieveImagesOnCondition();
     }
   }
 
@@ -100,6 +122,7 @@ export default class SelectionData extends Component {
       this.setState({
         timeofdays: [...this.state.timeofdays, val],
       });
+      this.retrieveImagesOnCondition();
     }
   }
 
@@ -133,22 +156,6 @@ export default class SelectionData extends Component {
           <option value="party cloudy">party cloudy</option>
           <option value="foggy">foggy</option>
         </select>
-        {/* {this.state.weather} */}
-        <div>
-          {this.state.weathers.map((weather) => {
-            return <div>{weather}</div>;
-          })}
-        </div>
-        <div>
-          {this.state.timeofdays.map((weather) => {
-            return <div>{weather}</div>;
-          })}
-        </div>
-        <div>
-          {this.state.scenes.map((weather) => {
-            return <div>{weather}</div>;
-          })}
-        </div>
         <select value={this.state.scene} onChange={this.handleChangeScene}>
           <option selected value="">
             Scene

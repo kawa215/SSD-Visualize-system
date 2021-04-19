@@ -44,7 +44,7 @@ exports.findAll = (req, res) => {
   Val.find({},condition).limit(numofsheets)
     .then((data) => {
       res.send(data);
-      console.log("data:" + data);
+      // console.log("data:" + data);
     })
     .catch((err) => {
       res.status(500).send({
@@ -53,6 +53,39 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
+// Retrieve Vals from the database.
+exports.findVals = (req, res) => {
+  console.log("find vals");
+  const weathers = [...req.body.weathers];
+  // const scenes = [...req.body.scenes];
+  // const timeofdays = [...req.body.timeofdays];
+
+  // console.log('weathers:' + weathers);
+  // console.log('weathers:' + req.params.weathers);
+  // console.log('scenes:' + scenes);
+  // console.log('timeofdays:' + timeofdays );
+  
+  // var condition = title
+  //   ? { title: { $regex: new RegExp(title), $options: "i" } }
+  //   : {};
+  // console.log("condition:" + condition);
+  // var condition = {name:1,attributes:1,_id:0};
+  // var numofsheets = 21;
+  // // limit で数を制限
+  // Val.find({},condition).limit(numofsheets)
+  //   .then((data) => {
+  //     res.send(data);
+  //     console.log("data:" + data);
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({
+  //       message:
+  //         err.message || "Some error occurred while retrieving vals.",
+  //     });
+  //   });
+};
+
 
 // // Find a single Val with an id
 // exports.findOne = (req, res) => {
