@@ -57,7 +57,8 @@ exports.findAll = (req, res) => {
 // Retrieve Vals from the database.
 exports.findVals = (req, res) => {
   console.log("find vals");
-  const weathers = [...req.body.weathers];
+  console.log(req.query);
+  // const weathers = [...req.body.weathers];
   // const scenes = [...req.body.scenes];
   // const timeofdays = [...req.body.timeofdays];
 

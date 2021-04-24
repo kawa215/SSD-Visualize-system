@@ -51,12 +51,32 @@ export default class SelectionData extends Component {
       });
   }
 
-  retrieveImagesOnCondition(val) {
+  retrieveImagesOnCondition(val, swi) {
+    var cloneWeathers;
+    var cloneScenes;
+    var cloneTimeofdays;
     //配列取り出し
-    var cloneWeathers = [...this.state.weathers, val];
-    var cloneScenes = [...this.state.scenes];
-    var cloneTimeofdays = [...this.state.timeofdays];
-    console.log(cloneWeathers);
+    switch (swi) {
+      case 1:
+        cloneWeathers = [...this.state.weathers, val];
+        cloneScenes = [...this.state.scenes];
+        cloneTimeofdays = [...this.state.timeofdays];
+        break;
+      case 2:
+        cloneWeathers = [...this.state.weathers];
+        cloneScenes = [...this.state.scenes, val];
+        cloneTimeofdays = [...this.state.timeofdays];
+        break;
+      case 3:
+        cloneWeathers = [...this.state.weathers];
+        cloneScenes = [...this.state.scenes];
+        cloneTimeofdays = [...this.state.timeofdays, val];
+        break;
+    }
+    // const cloneWeathers = [...this.state.weathers];
+    // var cloneScenes = [...this.state.scenes];
+    // var cloneTimeofdays = [...this.state.timeofdays];
+    // console.log(cloneWeathers);
     // this.setState({ test: cloneWeathers });
     // this.setState(
     //   cloneWeathers.map((weather)=>{return {test: [...this.state.test,weather]}})
@@ -93,10 +113,10 @@ export default class SelectionData extends Component {
 
     //重複しないなら末尾に追加
     if (!this.checkCondition(this.state.weathers, val)) {
-      this.setState({
-        weathers: [...this.state.weathers, val],
+      this.setState((state) => {
+        return { weathers: [...state.weathers, val] };
       });
-      this.retrieveImagesOnCondition(val);
+      this.retrieveImagesOnCondition(val,1);
     }
   }
 
@@ -109,7 +129,7 @@ export default class SelectionData extends Component {
       this.setState({
         scenes: [...this.state.scenes, val],
       });
-      this.retrieveImagesOnCondition();
+      this.retrieveImagesOnCondition(val,2);
     }
   }
 
@@ -122,7 +142,7 @@ export default class SelectionData extends Component {
       this.setState({
         timeofdays: [...this.state.timeofdays, val],
       });
-      this.retrieveImagesOnCondition();
+      this.retrieveImagesOnCondition(val,3);
     }
   }
 
