@@ -1,55 +1,21 @@
 const db = require("../models");
 const Val = db.vals;
 
-// // Create and Save a new Val
-// exports.create = (req, res) => {
-//   // Validate request
-//   if (!req.body.title) {
-//     res.status(400).send({ message: "Content can not be empty!" });
-//     return;
-//   }
-
-//   // Create a Val
-//   const val = new Val({
-//     title: req.body.title,
-//     description: req.body.description,
-//     published: req.body.published ? req.body.published : false,
-//   });
-
-//   // Save Val in the database
-//   val
-//     .save(val)
-//     .then((data) => {
-//       res.send(data);
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message:
-//           err.message || "Some error occurred while creating the Val.",
-//       });
-//     });
-// };
-
 // Retrieve all Vals from the database.
 exports.findAll = (req, res) => {
   console.log("find all");
-  const title = req.query.title;
-  // var condition = title
-  //   ? { title: { $regex: new RegExp(title), $options: "i" } }
-  //   : {};
-  // console.log("condition:" + condition);
-  var condition = {name:1,attributes:1,_id:0};
+  var field = { name: 1, attributes: 1, _id: 0 };
   var numofsheets = 21;
   // limit で数を制限
-  Val.find({},condition).limit(numofsheets)
+  Val.find({}, field)
+    .limit(numofsheets)
     .then((data) => {
       res.send(data);
-      // console.log("data:" + data);
+      console.log(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving vals.",
+        message: err.message || "Some error occurred while retrieving vals.",
       });
     });
 };
@@ -57,36 +23,29 @@ exports.findAll = (req, res) => {
 // Retrieve Vals from the database.
 exports.findVals = (req, res) => {
   console.log("find vals");
-  console.log(req.query);
-  // const weathers = [...req.body.weathers];
-  // const scenes = [...req.body.scenes];
-  // const timeofdays = [...req.body.timeofdays];
+  console.log(req.query.weathers);
 
-  // console.log('weathers:' + weathers);
-  // console.log('weathers:' + req.params.weathers);
-  // console.log('scenes:' + scenes);
-  // console.log('timeofdays:' + timeofdays );
-  
-  // var condition = title
-  //   ? { title: { $regex: new RegExp(title), $options: "i" } }
-  //   : {};
-  // console.log("condition:" + condition);
-  // var condition = {name:1,attributes:1,_id:0};
-  // var numofsheets = 21;
+  var condition = {
+    "attributes.weather": { $in: req.query.weathers },
+    "attributes.scene": { $in: req.query.scenes },
+    "attributes.timeofday": { $in: req.query.timeofdays },
+  };
+
+  var field = { name: 1, attributwes: 1, _id: 0 };
+  var numofsheets = 21;
   // // limit で数を制限
-  // Val.find({},condition).limit(numofsheets)
-  //   .then((data) => {
-  //     res.send(data);
-  //     console.log("data:" + data);
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       message:
-  //         err.message || "Some error occurred while retrieving vals.",
-  //     });
-  //   });
+  Val.find(condition, field)
+    .limit(numofsheets)
+    .then((data) => {
+      res.send(data);
+      console.log("data:" + data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving vals.",
+      });
+    });
 };
-
 
 // // Find a single Val with an id
 // exports.findOne = (req, res) => {

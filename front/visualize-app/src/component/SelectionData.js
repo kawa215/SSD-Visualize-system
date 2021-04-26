@@ -42,6 +42,7 @@ export default class SelectionData extends Component {
   retrieveImages() {
     ImageDataService.getAll()
       .then((response) => {
+        console.log(response);
         this.setState({
           images: response.data,
         });
