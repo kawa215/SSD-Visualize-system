@@ -9,10 +9,11 @@ export default class ImageView extends Component {
     return (
       <div className={styles.ImageView}>
         <img
-          class="ui medium rounded image"
           src={"http://localhost:4000/vals/" + this.props.imageName}
+          // className={styles.img}
+          className={styles.img}
         ></img>
-        {this.props.imageName}
+        <div >{this.props.imageName}</div>
       </div>
     );
   }

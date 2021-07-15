@@ -5,13 +5,13 @@ const Val = db.vals;
 exports.findAll = (req, res) => {
   console.log("find all");
   var field = { name: 1, attributes: 1, _id: 0 };
-  var numofsheets = 21;
+  var numofsheets = 100;
   // limit で数を制限
   Val.find({}, field)
     .limit(numofsheets)
     .then((data) => {
       res.send(data);
-      console.log(data);
+      // console.log(data);
     })
     .catch((err) => {
       res.status(500).send({
@@ -24,21 +24,79 @@ exports.findAll = (req, res) => {
 exports.findVals = (req, res) => {
   console.log("find vals");
   console.log(req.query.weathers);
+  var condition;
+  if (req.query.weathers) {
+    if (req.query.scenes) {
+      if (req.query.timeofdays) {
+        condition = {
+          "attributes.weather": { $in: req.query.weathers },
+          "attributes.scene": { $in: req.query.scenes },
+          "attributes.timeofday": { $in: req.query.timeofdays },
+        };
+      } else {
+        condition = {
+          "attributes.weather": { $in: req.query.weathers },
+          "attributes.scene": { $in: req.query.scenes },
+        };
+      }
+    } else {
+      if (req.query.timeofdays) {
+        condition = {
+          "attributes.weather": { $in: req.query.weathers },
+          "attributes.timeofday": { $in: req.query.timeofdays },
+        };
+      } else {
+        condition = {
+          "attributes.weather": { $in: req.query.weathers },
+        };
+      }
+    }
+  } else {
+    if (req.query.scenes) {
+      if (req.query.timeofdays) {
+        condition = {
+          "attributes.scene": { $in: req.query.scenes },
+          "attributes.timeofday": { $in: req.query.timeofdays },
+        };
+      } else {
+        condition = {
+          "attributes.scene": { $in: req.query.scenes },
+        };
+      }
+    } else {
+      if (req.query.timeofdays) {
+        condition = {
+          "attributes.timeofday": { $in: req.query.timeofdays },
+        };
+      } else {
+        condition = {};
+      }
+    }
+  }
+  // var condition = {
+  //   //空配列だったら入れたくない
+  //   "attributes.weather": { $in: req.query.weathers },
+  //   "attributes.scene": { $in: req.query.scenes },
+  //   "attributes.timeofday": { $in: req.query.timeofdays },
+  // };
 
-  var condition = {
-    "attributes.weather": { $in: req.query.weathers },
-    "attributes.scene": { $in: req.query.scenes },
-    "attributes.timeofday": { $in: req.query.timeofdays },
-  };
+  // var condition = {
+  //   //空配列だったら入れたくない
+  //   "attributes.weather": { $in: req.query.weathers },
+  //   "attributes.scene": { $in: req.query.scenes },
+  //   "attributes.timeofday": { $in: req.query.timeofdays },
+  // };
 
   var field = { name: 1, attributwes: 1, _id: 0 };
   var numofsheets = 21;
+  console.log("condition:" );
+  console.log(condition);
   // // limit で数を制限
   Val.find(condition, field)
-    .limit(numofsheets)
+    // .limit(numofsheets)
     .then((data) => {
       res.send(data);
-      console.log("data:" + data);
+      // console.log("data:" + data);
     })
     .catch((err) => {
       res.status(500).send({

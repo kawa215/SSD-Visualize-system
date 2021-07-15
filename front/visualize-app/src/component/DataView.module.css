@@ -1,0 +1,12 @@
+.DataView {
+  width: 1430px;
+  margin-left: 15px;
+  height: 420px;
+  background-color: white;
+  margin-top: 10px;
+  position: absolute;
+  left: 460px;
+  top: 45px;
+  box-shadow: 0 0 5px 1px #c0c0c0; /* 影 */
+  border-radius: 8px; /* 角の丸み */
+}
