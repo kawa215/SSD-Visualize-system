@@ -89,7 +89,7 @@ exports.findVals = (req, res) => {
 
   var field = { name: 1, attributwes: 1, _id: 0 };
   var numofsheets = 21;
-  console.log("condition:" );
+  console.log("condition:");
   console.log(condition);
   // // limit で数を制限
   Val.find(condition, field)
@@ -106,21 +106,24 @@ exports.findVals = (req, res) => {
 };
 
 // // Find a single Val with an id
-// exports.findOne = (req, res) => {
-//   const id = req.params.id;
+exports.findOneCondition = (req, res) => {
+  console.log("findonecondition");
+  const condition = {
+    name: req.params.name,
+  };
+  const field = { attributes: 1, _id: 0 };
 
-//   Val.findById(id)
-//     .then((data) => {
-//       if (!data)
-//         res.status(404).send({ message: "Not found Val with id " + id });
-//       else res.send(data);
-//     })
-//     .catch((err) => {
-//       res
-//         .status(500)
-//         .send({ message: "Error retrieving Val with id=" + id });
-//     });
-// };
+  Val.find(condition, field)
+    .then((data) => {
+      console.log(data);
+      if (!data)
+        res.status(404).send({ message: "Not found Val with id " + id });
+      else res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: "Error retrieving Val with id=" + id });
+    });
+};
 
 // // Update a Val by the id in the request
 // exports.update = (req, res) => {

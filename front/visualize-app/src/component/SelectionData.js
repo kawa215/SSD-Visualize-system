@@ -3,7 +3,9 @@ import ImageDataService from "../services/Image.service";
 import styles from "./SelectionData.module.css";
 import ImageView from "./ImageView";
 import { connect } from "react-redux";
- class SelectionData extends Component {
+import { changeCount, changeImage } from "../store/index";
+
+class SelectionData extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,6 +17,7 @@ import { connect } from "react-redux";
       weathers: [],
       scenes: [],
       timeofdays: [],
+      count: this.props.count,
     };
 
     this.handleChangeRadio = this.handleChangeRadio.bind(this);
@@ -34,9 +37,9 @@ import { connect } from "react-redux";
 
   passImage(imageName) {
     const dispatch = this.props.dispatch;
-    console.log("pass")
-    dispatch({ type: "ADD_IMAGE", payload: imageName });
-    dispatch({ type: "CHANGE_RADIO", payload: this.state.radio });
+    console.log("pass");
+    // dispatch({ type: "ADD_IMAGE", payload: imageName });
+    // dispatch({ type: "CHANGE_RADIO", payload: this.state.radio });
   }
 
   retrieveImages() {
@@ -69,6 +72,7 @@ import { connect } from "react-redux";
     var cloneScenes;
     var cloneTimeofdays;
     //配列取り出し
+    // eslint-disable-next-line default-case
     switch (swi) {
       case 1:
         cloneWeathers = [...this.state.weathers, val];
@@ -201,6 +205,8 @@ import { connect } from "react-redux";
           });
         }
         break;
+      default:
+        break;
     }
 
     this.retrieveImagesOnCondition(cloneWeathers, cloneScenes, cloneTimeofdays);
@@ -212,9 +218,15 @@ import { connect } from "react-redux";
   // }
 
   render() {
+    const a = this.props.count;
     return (
       <div className={styles.SelectionData}>
-        {this.props.count}メタタグ絞り込み:
+        {/* <button onClick={() => this.props.changeCount()} title="setName">
+          おおおお
+        </button>
+        count = {this.props.count}/{this.state.count}/{a}
+        <br /> */}
+        メタタグ絞り込み:
         <div>
           <select
             className={styles.classic}
@@ -308,24 +320,7 @@ import { connect } from "react-redux";
           })}
         </div>
         <div>
-          <label>
-            <input
-              type="radio"
-              name="detect"
-              value="正検出"
-              onChange={this.handleChangeRadio}
-            />
-            正検出
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="detect"
-              value="誤検出"
-              onChange={this.handleChangeRadio}
-            />
-            誤検出
-          </label>
+ 
           <a href="#" onClick={this.handleClick}>
             全ての条件を解除
           </a>
@@ -333,20 +328,22 @@ import { connect } from "react-redux";
         {this.state.images.map((image) => {
           return (
             <ImageView
-              onClick={this.passImage(image.name)}
+              onClick={() => this.props.changeCount()}
               imageName={image.name}
             ></ImageView>
           );
         })}
-        {/* <div>
-          {this.state.images.map((image) => {
-            return (
-              <div>
-                {image.name}:{image.attributes.weather}
-              </div>
-            );
-          })}
-        </div> */}
+        {/* {
+          <div>
+            {this.state.images.map((image) => {
+              return (
+                <div>
+                  {image.name}:{image.attributes.weather}
+                </div>
+              );
+            })}
+          </div>
+        } */}
         {this.state.radio}
       </div>
     );
@@ -357,4 +354,20 @@ const mapStateToProps = (state) => {
   return { count: state.count };
 };
 
-export default connect(mapStateToProps)(SelectionData);
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     countUp: function (value) {
+//       return dispatch(countUp(value));
+//     },
+//     countDown: function (value) {
+//       return dispatch(countDown(value));
+//     },
+//   };
+// };
+
+const mapDispatchToProps = (dispatch) => ({
+  changeCount: (count) => dispatch(changeCount()),
+  changeImage: (name) => dispatch(changeImage(name)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SelectionData);

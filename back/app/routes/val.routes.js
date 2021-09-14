@@ -15,8 +15,8 @@ module.exports = (app) => {
   // // Retrieve all published vals
   // router.get("/published", vals.findAllPublished);
 
-  // // Retrieve a single val with id
-  // router.get("/:id", vals.findOne);
+  // // Retrieve a single val with name
+  router.get("/:name", vals.findOneCondition);
 
   // // Update a val with id
   // router.put("/:id", vals.update);

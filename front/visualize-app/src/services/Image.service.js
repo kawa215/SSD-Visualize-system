@@ -4,6 +4,7 @@ class ImageDataService {
   getAll() {
     return http.get("/vals");
   }
+
   getVals(weathers, scenes, timeofdays) {
     console.log("getvals:");
     console.log(weathers);
@@ -15,6 +16,10 @@ class ImageDataService {
 
   get(id) {
     return http.get(`/vals/${id}`);
+  }
+
+  getConditionByName(name) {
+    return http.get(`/vals/${name}`);
   }
 
   // create(data) {

@@ -1,4 +1,4 @@
-.DataView {
+.CompareView {
   width: 1430px;
   margin-left: 15px;
   height: 520px;
@@ -6,91 +6,13 @@
   margin-top: 10px;
   position: absolute;
   left: 460px;
-  top: 45px;
+  top: 580px;
   box-shadow: 0 0 5px 1px #c0c0c0; /* 影 */
   border-radius: 8px; /* 角の丸み */
   padding: 10px;
   border-radius: 8px; /* 角の丸み */
   font-weight: bold;
   font-size: 16px;
-}
-
-.img {
-  width: 500px;
-  height: 300px;
-  border-radius:  3px; 
-  display: block;
-  margin-top: 30px;
-  margin-bottom: 15px;
-}
-
-.compare {
-  position: absolute;
-  top: 480px;
-  right: 280px;
-}
-
-.button03 a {
-  position: absolute;
-  top: 450px;
-  right: 140px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 auto;
-  padding: 0.5em 0.6em;
-  width: 200px;
-  /* color: #2285b1; */
-  font-size: 18px;
-  font-weight: 700;
-  border: 2px solid;
-  cursor: pointer;
-}
-
-.button03 a::after {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-top: 3px solid #2285b1;
-  border-right: 3px solid #2285b1;
-  transform: rotate(45deg);
-}
-
-.button03 a:hover {
-  color: #333333;
-  text-decoration: none;
-  background-color: #a0c4d3;
-}
-
-.button03 a:hover::after {
-  border-top: 3px solid #333333;
-  border-right: 3px solid #333333;
-}
-
-.visualize {
-  position: absolute;
-  top: 0px;
-  right: 350px;
-  width: 380px;
-  height: 500px;
-  border-radius:  3px; 
-  display: inline;
-  margin-top: 10px;
-  margin-bottom: 15px;
-}
-
-.inline {
-  display: inline;
-}
-
-.weather {
-  /* margin: 2em auto; */
-  margin-left: 15px;
-  padding: 0.2em;
-  width: 90%;
-  color: #666; /* 文字色 */
-  background-color: #f7f7f7; /* 背景色 */
-  border: 1px solid #ccc; /* 枠線 */
 }
 
 
@@ -122,7 +44,7 @@ select.classic {
   background-size: 5px 5px, 5px 5px, 2.5em 2.5em;
   background-repeat: no-repeat;
   margin:5px;
-  margin-top: 30px;
+  margin-top: 3px;
 }
 
 select.classic:focus {
@@ -136,11 +58,18 @@ select.classic:focus {
   outline: 0;
 }
 
+.inline {
+  display: inline-bloc;
+}
+
+
 select:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;
 }
 
-label {
-  margin-left: 10px;
+.block {
+  display: block;
+  width: 100px;
+  height: 100px;
 }
