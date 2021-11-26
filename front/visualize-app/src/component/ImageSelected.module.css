@@ -1,0 +1,23 @@
+.titleBold {
+
+  font-weight: bold;
+  font-size: 17px;
+  margin-bottom: 10px;
+  /* background-color: aqua; */
+}
+
+.img {
+  width: 220px;
+  height: 120px;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+.ImageView {
+  /* height: 155px; */
+  background-color: aliceblue;
+  /* width: 250px; */
+  /* float: left; */
+  /* margin-right: 5px; */
+}
+

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from "react";
 import styles from "./DataView.module.css";
@@ -96,7 +97,18 @@ class DataView extends Component {
           className={styles.visualize}
         ></img>
         <div className={styles.button03}>
-          <a  onClick={(e) => this.props.addImages(this.props.image)}> 比較ビューに追加</a>
+          <a
+            onClick={() =>
+              this.props.addImages(
+                this.props.image,
+                this.props.weather,
+                this.props.scene,
+                this.props.timeofday
+              )
+            }
+          >
+            比較ビューに追加
+          </a>
         </div>
       </div>
     );
@@ -114,7 +126,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  addImages: (name) => dispatch(addImages(name)),
+  addImages: (image, weather, scene, timeofday) => dispatch(addImages(image, weather, scene, timeofday)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataView);

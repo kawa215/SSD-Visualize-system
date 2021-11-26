@@ -24,9 +24,12 @@ export const changeImage = (name) => ({
   name: name,
 });
 
-export const addImages = (name) => ({
+export const addImages = (image, weather, scene, timeofday) => ({
   type: "ADD_IMAGES",
-  name: name,
+  image: image,
+  weather: weather,
+  scene: scene,
+  timeofday: timeofday,
 });
 
 export const changeConditions = (attributes) => ({
@@ -47,7 +50,15 @@ const reducer = (state = initialState, action) => {
     case "ADD_IMAGES":
       return {
         ...state,
-        images: [...state.images, action.name],
+        images: [
+          ...state.images,
+          {
+            name: action.image,
+            weather: action.weather,
+            scene: action.scene,
+            timeofday: action.timeofday,
+          },
+        ],
       };
     case "CHNGE_COUNT":
       return {

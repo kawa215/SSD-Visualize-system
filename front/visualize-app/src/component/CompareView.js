@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import styles from "./CompareView.module.css";
 import { connect } from "react-redux";
-import ImageView from "./ImageView";
+import ImageSelected from "./ImageSelected";
 import { changeCount, changeImage } from "../store/index";
 import Sample from "./sample.png";
 
@@ -106,19 +106,22 @@ class CompareView extends Component {
           <option value="overcast">drivable area</option>
           <option value="undefined">lane</option>
         </select>
-        <div>
-          {this.props.images.map((image) => {
-            return (
-              <div className={styles.block}>
-                <span className={styles.inline}>{this.props.weather} {this.props.scene} {this.props.timeofday}</span>
-                <ImageView
+        {this.props.images.map((image) => {
+          return (
+            <div className={styles.block}>
+              <div className={styles.inlineImg}>
+                <ImageSelected
                   // onClick={() => this.props.changeCount()}
-                  imageName={image}
-                ></ImageView>
+                  imageName={image.name}
+                ></ImageSelected>
+                
+                <span className={styles.weather}> {image.weather}</span>
+                <span className={styles.weather}>{image.scene} </span>
+                <span className={styles.weather}>{image.timeofday}</span>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -126,11 +129,7 @@ class CompareView extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    count: state.count,
     images: state.images,
-    weather: state.weather,
-    scene: state.scene,
-    timeofday: state.timeofday,
   };
 };
 

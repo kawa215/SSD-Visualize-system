@@ -4,6 +4,8 @@ var app = express();
 
 app.use('/vals', express.static('val'));
 
+app.use('/viss', express.static('vis'));
+
 // HTTPリクエストを受け取る部分
 app.get('/', function (req, res) {
   res.send('Hello World!');
