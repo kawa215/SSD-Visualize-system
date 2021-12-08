@@ -11,7 +11,8 @@ const initialState = {
   weather: "",
   scene: "",
   timeofday: "",
-  images: [],
+  target_images: [],
+  factor_images: [],
 };
 
 // 引数nameをとり、{type: "ADD_NAME", name: name}を返すjsの関数。
@@ -24,12 +25,37 @@ export const changeImage = (name) => ({
   name: name,
 });
 
-export const addImages = (image, weather, scene, timeofday) => ({
+// export const addTargetImage = (image, weather, scene, timeofday) => ({
+//   type: "ADD_TARGET_IMAGES",
+//   image: image,
+//   weather: weather,
+//   scene: scene,
+//   timeofday: timeofday,
+// });
+
+export const addImages = (
+  image,
+  weather,
+  scene,
+  timeofday,
+  box,
+  method,
+  clas
+) => ({
   type: "ADD_IMAGES",
   image: image,
   weather: weather,
   scene: scene,
   timeofday: timeofday,
+  box: box,
+  method: method,
+  clas: clas,
+});
+
+export const deleteFactorImage = (targetIndex, factorIndex) => ({
+  type: "DELETE_FACTOR_IMAGE",
+  targetIndex: targetIndex,
+  factorIndex: factorIndex,
 });
 
 export const changeConditions = (attributes) => ({
@@ -41,25 +67,99 @@ export const changeConditions = (attributes) => ({
 
 const reducer = (state = initialState, action) => {
   console.log(action.type);
+  var cloneTargets;
+  var cloneFactorImages;
 
   switch (action.type) {
-    // case "INCREASE_COUNT":
-    //   return {
-    //     count: state.count + 1,
-    //   };
     case "ADD_IMAGES":
-      return {
-        ...state,
-        images: [
-          ...state.images,
+      //重複チェック
+      // Array.from(new Set(array1));
+      console.log("ADD_IMAGES");
+      cloneTargets = [...state.target_images];
+      const targetImage = {
+        name: action.image,
+        weather: action.weather,
+        scene: action.scene,
+        timeofday: action.timeofday,
+      };
+      var visualizedImage = {
+        name: action.image,
+        weather: action.weather,
+        scene: action.scene,
+        timeofday: action.timeofday,
+        box: action.box,
+        method: action.method,
+        clas: action.clas,
+      };
+      console.log(visualizedImage);
+      //中身コピー
+      var index = state.target_images.findIndex(
+        ({ name }) => name === action.image
+      );
+      // var index = state.target_images.indexOf(action.image);
+      cloneFactorImages = JSON.parse(JSON.stringify(state.factor_images));
+      console.log(state.factor_images);
+      console.log(cloneFactorImages);
+      var newImages;
+      //対象画像重複なしindex見つからない
+      console.log(index);
+      if (index < 0) {
+        //可視化画像ストックあり
+        //多次元コピー
+        visualizedImage = [
           {
             name: action.image,
             weather: action.weather,
             scene: action.scene,
             timeofday: action.timeofday,
+            box: action.box,
+            method: action.method,
+            clas: action.clas,
           },
-        ],
-      };
+        ];
+        cloneFactorImages.push(visualizedImage);
+        newImages = JSON.parse(JSON.stringify(cloneFactorImages));
+        return {
+          ...state,
+          target_images: [...state.target_images, targetImage],
+          factor_images: newImages,
+        };
+      } else {
+        //対象画像重複あり
+        console.log("重複あり");
+
+        if (cloneFactorImages[index].length > 3) {
+          return {
+            ...state,
+          };
+        }
+        cloneFactorImages[index].push(visualizedImage);
+        newImages = JSON.parse(JSON.stringify(cloneFactorImages));
+        return {
+          ...state,
+          factor_images: newImages,
+        };
+      }
+    case "DELETE_FACTOR_IMAGE":
+      
+      cloneTargets = [...state.target_images];
+      cloneFactorImages = JSON.parse(JSON.stringify(state.factor_images));
+
+      if (action.factorIndex === -1) {
+        cloneTargets.splice(action.targetIndex, 1);
+        cloneFactorImages.splice(action.targetIndex, 1);
+        return {
+          ...state,
+          target_images: cloneTargets,
+          factor_images: cloneFactorImages,
+        };
+      } else {
+        cloneFactorImages[action.targetIndex].splice(action.factorIndex, 1);
+        return {
+          ...state,
+          factor_images: cloneFactorImages,
+        };
+      }
     case "CHNGE_COUNT":
       return {
         ...state,

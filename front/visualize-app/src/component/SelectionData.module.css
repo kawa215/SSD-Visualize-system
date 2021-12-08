@@ -16,6 +16,7 @@
   font-size: 100%; /*ボタンの大きさ*/
   font-weight: bold;
   border: 1px solid #999;
+  background: #333;
   color: #999;
   display: flex;
   justify-content: center;

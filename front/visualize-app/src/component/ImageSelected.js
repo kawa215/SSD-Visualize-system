@@ -3,8 +3,9 @@
 import React, { Component } from "react";
 import styles from "./ImageSelected.module.css";
 import ImageDataService from "../services/Image.service";
-
-export default class ImageSelected extends Component {
+import { connect } from "react-redux";
+import { deleteFactorImage } from "../store/index";
+class ImageSelected extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,6 +15,14 @@ export default class ImageSelected extends Component {
       timeofdays: [],
     };
     this.retrieveConditions = this.retrieveConditions.bind(this);
+    this.handleClickBatsu = this.handleClickBatsu.bind(this);
+  }
+
+  handleClickBatsu() {
+    this.props.deleteFactorImage(
+      this.props.indexTarget,
+      this.props.indexFactor
+    );
   }
 
   retrieveConditions(name) {
@@ -43,13 +52,26 @@ export default class ImageSelected extends Component {
   render() {
     return (
       <div className={styles.ImageView}>
-        <div className={styles.titleBold}>{this.props.imageName}</div>
+        <div className={styles.titleBold}>
+          {this.props.flag !== "true" && <span> {this.props.imageName}</span>}
+        </div>
         <img
           src={"http://localhost:4000/vals/" + this.props.imageName}
           // className={styles.img}
           className={styles.img}
           // onClick={this.retrieveConditions(this.props.imageName)}
         ></img>
+        <span
+          // onClick={this.props.deleteFactorImage(
+          //   this.props.indexTarget,
+          //   this.props.indexFactor
+          // )}
+          onClick={this.handleClickBatsu}
+          className={styles.batsu}
+        >
+          ×
+        </span>
+        {/* <span className={styles.round_btn}></span> */}
         {/* <button onClick={this.retrieveConditions(this.props.imageName)}>
           テスト
         </button> */}
@@ -57,3 +79,14 @@ export default class ImageSelected extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  deleteFactorImage: (targetIndex, factorIndex) =>
+    dispatch(deleteFactorImage(targetIndex, factorIndex)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImageSelected);
