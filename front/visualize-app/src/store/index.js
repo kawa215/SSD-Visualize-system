@@ -38,7 +38,10 @@ export const addImages = (
   weather,
   scene,
   timeofday,
+  boxImageURL,
   box,
+  visualizedImageURL,
+  detect,
   method,
   clas
 ) => ({
@@ -47,7 +50,10 @@ export const addImages = (
   weather: weather,
   scene: scene,
   timeofday: timeofday,
+  boxImageURL: boxImageURL,
   box: box,
+  visualizedImageURL: visualizedImageURL,
+  detect: detect,
   method: method,
   clas: clas,
 });
@@ -75,9 +81,12 @@ const reducer = (state = initialState, action) => {
       //重複チェック
       // Array.from(new Set(array1));
       console.log("ADD_IMAGES");
+      console.log(action)
       cloneTargets = [...state.target_images];
       const targetImage = {
         name: action.image,
+        boxImageURL: action.boxImageURL,
+        box: action.box,
         weather: action.weather,
         scene: action.scene,
         timeofday: action.timeofday,
@@ -87,7 +96,10 @@ const reducer = (state = initialState, action) => {
         weather: action.weather,
         scene: action.scene,
         timeofday: action.timeofday,
+        boxImageURL: action.boxImageURL,
         box: action.box,
+        visualizedImageURL: action.visualizedImageURL,
+        detect: action.detect,
         method: action.method,
         clas: action.clas,
       };
@@ -112,7 +124,10 @@ const reducer = (state = initialState, action) => {
             weather: action.weather,
             scene: action.scene,
             timeofday: action.timeofday,
+            boxImageURL: action.boxImageURL,
             box: action.box,
+            visualizedImageURL: action.visualizedImageURL,
+            detect: action.detect,
             method: action.method,
             clas: action.clas,
           },
@@ -141,7 +156,6 @@ const reducer = (state = initialState, action) => {
         };
       }
     case "DELETE_FACTOR_IMAGE":
-      
       cloneTargets = [...state.target_images];
       cloneFactorImages = JSON.parse(JSON.stringify(state.factor_images));
 

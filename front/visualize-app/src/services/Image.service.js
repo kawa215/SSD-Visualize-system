@@ -1,25 +1,47 @@
-import http from "../http-common";
+import { userApi, boxApi } from "../http-common";
 
 class ImageDataService {
   getAll() {
-    return http.get("/vals");
+    return userApi.get("/vals");
+  }
+
+  // getBoxImage() {}
+
+  getBoxList(imageName) {
+    return boxApi.get(`/${imageName}`);
+  }
+
+  getDetectBoxList(boxList, imageName) {
+    console.log(boxList);
+    // return boxApi.get(`/detect/detectBoxes/${boxList}`);
+    return boxApi.get("/detect/detectBoxes", {
+      params: { boxList: boxList, imageName: imageName },
+    });
+  }
+
+  getBoxImage(box, imageName) {
+    console.log(box);
+    // return boxApi.get(`/detect/detectBoxes/${boxList}`);
+    return boxApi.get("/detect/boxImage", {
+      params: { box: box, imageName: imageName },
+    });
   }
 
   getVals(weathers, scenes, timeofdays) {
     console.log("getvals:");
     console.log(weathers);
 
-    return http.get("/vals/conditions", {
+    return userApi.get("/vals/conditions", {
       params: { weathers: weathers, scenes: scenes, timeofdays: timeofdays },
     });
   }
 
   get(id) {
-    return http.get(`/vals/${id}`);
+    return userApi.get(`/vals/${id}`);
   }
 
   getConditionByName(name) {
-    return http.get(`/vals/${name}`);
+    return userApi.get(`/vals/${name}`);
   }
 
   // create(data) {

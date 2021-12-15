@@ -53,10 +53,11 @@ class ImageSelected extends Component {
     return (
       <div className={styles.ImageView}>
         <div className={styles.titleBold}>
-          {this.props.flag !== "true" && <span> {this.props.imageName}</span>}
+          {this.props.flag !== "true" && 
+          <span> {this.props.imageName}</span>}
         </div>
         <img
-          src={"http://localhost:4000/vals/" + this.props.imageName}
+          src={this.props.URL}
           // className={styles.img}
           className={styles.img}
           // onClick={this.retrieveConditions(this.props.imageName)}

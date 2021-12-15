@@ -178,9 +178,11 @@ class CompareView extends Component {
     var ans = false;
     //からの条件はtrue
     for (var i = 0; i < 3; i++) {
+      console.log("checkemmpyに渡す");
+      console.log(this.state.conditions);
       boo[i] = this.checkEmpty(this.state.conditions[i]);
-      console.log("checkempty:i="+i)
-      console.log(boo[i])
+      console.log("checkempty:i=" + i);
+      console.log(boo[i]);
       if (!boo[i]) {
         //からじゃない -1　⇨0
         boo[i] = Boolean(
@@ -189,18 +191,87 @@ class CompareView extends Component {
       }
     }
     ans = boo[0] && boo[1] && boo[2];
-    console.log("ans=")
-    console.log(ans)
+    console.log("ans=");
+    console.log(ans);
+    return ans;
+  }
+
+  inFactorisActive(factor_image) {
+    console.log("factorの方です")
+    var factor_condition = [
+      factor_image.detect,
+      factor_image.method,
+      factor_image.clas,
+    ];
+
+    var boo = [false, false, false];
+    var ans = false;
+    //からの条件はtrue
+    //そもそも6つ繋げなkとそれは必要ない
+    for (var i = 3; i < 6; i++) {
+      boo[i - 3] = this.checkEmpty(this.state.conditions[i]);
+      console.log("checkempty:i=" + i);
+      console.log(boo[i - 3]);
+      if (!boo[i - 3]) {
+        //からじゃない -1　⇨0
+        if (Array.isArray(this.state.conditions[i])) {
+          boo[i - 3] = Boolean(
+            this.state.conditions[i].indexOf(factor_condition[i - 3]) + 1
+          );
+        } else {
+          if (this.state.conditions[i] === factor_condition[i - 3]) {
+            boo[i - 3] = true;
+          } else {
+            boo[i - 3] = false;
+          }
+        }
+        // boo[i - 3] = Boolean(
+        //   this.state.conditions[i].indexOf(factor_condition[i - 3]) + 1
+        // );
+      }
+    }
+    ans = boo[0] && boo[1] && boo[2];
+    console.log("ans=");
+    console.log(ans);
     return ans;
   }
 
   checkEmpty(array) {
+    console.log("checkempty 引数は=");
+    console.log(array);
     //多分ミスってるからの配列は?undefine?
-    if (array === undefined || array.length===0) {
-      return true;
-    } else {
-      return false;
+    // if (typeof array === "string" || array instanceof String) {
+    //   //it is string
+    //   if (array === undefined) return true;
+    //   else return false;
+    // } else {
+    //   //it is not string
+    //   if (array === undefined || array.length === 0) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // }
+    // if (array === undefined) {
+    //   if (Array.isArray(array)) {
+    //     if (array.length === 0) return true;
+    //     else return false;
+    //   }
+    //   return true;
+    // } else {
+    //   if (Array.isArray(array)) {
+    //     if (array.length === 0) return true;
+    //     else return false;
+    //   }else{
+    //     return false;
+    //   }
+    if (Array.isArray(array)) {
+      if (array.length === 0 || array === undefined) return true;
+      else return false;
     }
+    if (array === undefined || array === null) return true;
+    else return false;
+    // }
   }
 
   render() {
@@ -290,9 +361,9 @@ class CompareView extends Component {
           <option selected value="">
             Visualization
           </option>
-          <option value="Integrated Gradients">Integrated Gradients</option>
-          <option value="GradCAM">GradCAM</option>
-          <option value="Deeplift">Deeplift</option>
+          <option value="ig">Integrated Gradients</option>
+          <option value="gradcam">GradCAM</option>
+          <option value="deeplift">Deeplift</option>
         </select>
         <select
           className={styles.classic}
@@ -323,46 +394,51 @@ class CompareView extends Component {
               {this.inLineisActive(target_image) && (
                 <div className={styles.block}>
                   <span className={styles.imageRow}>
-                  <div className={styles.inlineImg}>
-                    <ImageSelected
-                      // onClick={() => this.props.changeCount()}
-                      imageName={target_image.name}
-                      indexTarget={indexTarget}
-                      indexFactor={-1}
-                    ></ImageSelected>
+                    <div className={styles.inlineImg}>
+                      <ImageSelected
+                        // onClick={() => this.props.changeCount()}
+                        imageName={target_image.name}
+                        URL={target_image.boxImageURL}
+                        indexTarget={indexTarget}
+                        indexFactor={-1}
+                        flag="false"
+                      ></ImageSelected>
 
-                    <span className={styles.weather}>
-                      {target_image.weather}
-                    </span>
-                    <span className={styles.weather}>
-                      {target_image.scene}{" "}
-                    </span>
-                    <span className={styles.weather}>
-                      {target_image.timeofday}
-                    </span>
-                  </div>
+                      <span className={styles.weather}>
+                        {target_image.weather}
+                      </span>
+                      <span className={styles.weather}>
+                        {target_image.scene}
+                      </span>
+                      <span className={styles.weather}>
+                        {target_image.timeofday}
+                      </span>
+                    </div>
 
-                  {this.props.factor_images[indexTarget].map(
-                    (factor_image, indexFactor) => {
-                      return (
-                        <span>
-                          {/* {this.factorImageisActive(factor_image) && ( */}
-                          <div className={styles.factorImg}>
-                            <ImageSelected
-                              // onClick={() => this.props.changeCount()}
-                              imageName={factor_image.name}
-                              flag="true"
-                              indexTarget={indexTarget}
-                              indexFactor={indexFactor}
-                            ></ImageSelected>
-                            <span className={styles.weather}>
-                              {factor_image.method}- {factor_image.clas}
-                            </span>
-                          </div>
-                        </span>
-                      );
-                    }
-                  )}
+                    {this.props.factor_images[indexTarget].map(
+                      (factor_image, indexFactor) => {
+                        return (
+                          <span>
+                            {/* {this.factorImageisActive(factor_image) && ( */}
+                            {this.inFactorisActive(factor_image) && (
+                              <div className={styles.factorImg}>
+                                <ImageSelected
+                                  // onClick={() => this.props.changeCount()}
+                                  imageName={factor_image.name}
+                                  flag="true"
+                                  URL={factor_image.visualizedImageURL}
+                                  indexTarget={indexTarget}
+                                  indexFactor={indexFactor}
+                                ></ImageSelected>
+                                <span className={styles.weather}>
+                                  box{factor_image.box}-{factor_image.detect}-{factor_image.method}- {factor_image.clas}
+                                </span>
+                              </div>
+                            )}
+                          </span>
+                        );
+                      }
+                    )}
                   </span>
                   {/* )} */}
                 </div>
