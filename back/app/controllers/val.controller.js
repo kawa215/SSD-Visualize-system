@@ -20,6 +20,24 @@ exports.findAll = (req, res) => {
     });
 };
 
+// exports.findBoxList = (req, res) => {
+//   console.log("find all");
+//   var field = { name: 1, attributes: 1, _id: 0 };
+//   var numofsheets = 100;
+//   // limit で数を制限
+//   Val.find({}, field)
+//     .limit(numofsheets)
+//     .then((data) => {
+//       res.send(data);
+//       // console.log(data);
+//     })
+//     .catch((err) => {
+//       res.status(500).send({
+//         message: err.message || "Some error occurred while retrieving vals.",
+//       });
+//     });
+// };
+
 // Retrieve Vals from the database.
 exports.findVals = (req, res) => {
   console.log("find vals");

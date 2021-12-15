@@ -9,6 +9,8 @@ module.exports = (app) => {
   // Retrieve all vals
   router.get("/", vals.findAll);
 
+  // router.get("/:imageName", vals.findBoxList);
+
   // Retrieve vals on conditions
   router.get("/conditions", vals.findVals);
 
