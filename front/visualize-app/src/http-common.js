@@ -14,7 +14,7 @@ import axios from "axios";
 //   }
 // });
 
-export const userApi = axios.create({
+export const databaseApi = axios.create({
   baseURL: 'http://localhost:8080/api',
     headers: {
     "Content-type": "application/json"

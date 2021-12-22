@@ -3,17 +3,19 @@ import ImageDataService from "../services/Image.service";
 import styles from "./SelectionData.module.css";
 import ImageView from "./ImageView";
 import { connect } from "react-redux";
-import { changeCount, changeImage } from "../store/index";
-
+import { changeModel, changeImage } from "../store/index";
+import imageDataService from "../services/Image.service";
 class SelectionData extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      model: "",
       weather: "",
       scene: "",
       timeofday: "",
       radio: "",
       images: [],
+      imagesWithGroundtruth: [],
       weathers: [],
       scenes: [],
       timeofdays: [],
@@ -21,6 +23,7 @@ class SelectionData extends Component {
     };
 
     this.handleChangeRadio = this.handleChangeRadio.bind(this);
+    this.handleChangeModel = this.handleChangeModel.bind(this);
     this.handleChangeWeather = this.handleChangeWeather.bind(this);
     this.handleChangeScene = this.handleChangeScene.bind(this);
     this.handleChangeTimeofday = this.handleChangeTimeofday.bind(this);
@@ -29,11 +32,12 @@ class SelectionData extends Component {
     this.retrieveImagesOnCondition = this.retrieveImagesOnCondition.bind(this);
     this.addCondition = this.addCondition.bind(this);
     this.passImage = this.passImage.bind(this);
+    this.getALLdetectImageList = this.getALLdetectImageList.bind(this);
   }
 
-  componentDidMount() {
-    this.retrieveImages();
-  }
+  // componentDidMount() {
+  //   this.retrieveImages();
+  // }
 
   passImage(imageName) {
     const dispatch = this.props.dispatch;
@@ -42,55 +46,126 @@ class SelectionData extends Component {
     // dispatch({ type: "CHANGE_RADIO", payload: this.state.radio });
   }
 
-  retrieveImages() {
-    ImageDataService.getAll()
-      .then((response) => {
-        console.log(response.data);
-        this.setState({
-          images: response.data,
+  retrieveImages(model) {
+    if (this.state.radio || this.state.weathers.length || this.state.scenes.length || this.state.timeofdays.length) {
+      this.retrieveImagesOnCondition(
+        this.state.weathers,
+        this.state.scenes,
+        this.state.timeofdays,
+        this.state.radio,
+        model
+      );
+    } else {
+      ImageDataService.getAll()
+        .then((response) => {
+          console.log(response.data);
+
+          this.setState({
+            images: response.data,
+          });
+        })
+        .catch((e) => {
+          console.log(e);
         });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    }
   }
 
-  retrieveImagesOnCondition(cloneWeathers, cloneScenes, cloneTimeofdays) {
-    ImageDataService.getVals(cloneWeathers, cloneScenes, cloneTimeofdays)
-      .then((response) => {
-        this.setState({ images: response.data });
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  retrieveImagesOnCondition(
+    cloneWeathers,
+    cloneScenes,
+    cloneTimeofdays,
+    radio,
+    model
+  ) {
+    console.log("retrieveImagesOnCondition");
+    // radioが変更された時も どれか長さがある時
+    if (cloneWeathers.length || cloneScenes.length || cloneTimeofdays.length) {
+      ImageDataService.getVals(cloneWeathers, cloneScenes, cloneTimeofdays)
+        .then((response) => {
+          if (this.state.radio !== "all" && this.state.radio !== "") {
+            const data = response.data;
+            console.log("resoponse");
+            console.log(data);
+            // this.setState({ images: response.data });
+            const dataName = data.map((data) => {
+              return data.name;
+            });
+            console.log(this.state.model);
+            console.log(this.state.radio);
+            console.log(dataName);
+            ImageDataService.getDetectSelectedImageList(model, radio, dataName)
+              .then((response) => {
+                //ここから！サーバー側記述
+                console.log(response.data);
+                const datajpg = response.data.map((data) => {
+                  return data + ".jpg";
+                });
+                //
+                console.log(datajpg);
+                console.log(data);
+                const images = data.filter((dat) => datajpg.includes(dat.name));
+                this.setState({
+                  images: images,
+                });
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          } else {
+            console.log("this.state.radio ! this.state.radio !== ");
+
+            this.setState({ images: response.data });
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+      //radioのみの時
+      if (radio !== "") {
+        console.log("this.getALLdetectImageList");
+        this.getALLdetectImageList(model, radio);
+      } else {
+        //radioもない時
+        this.retrieveImages(model);
+      }
+    }
     //条件に合わせて取得
   }
 
   addCondition(val, swi) {
     console.log("on condition");
-    var cloneWeathers;
-    var cloneScenes;
-    var cloneTimeofdays;
-    //配列取り出し
-    // eslint-disable-next-line default-case
-    switch (swi) {
-      case 1:
-        cloneWeathers = [...this.state.weathers, val];
-        cloneScenes = [...this.state.scenes];
-        cloneTimeofdays = [...this.state.timeofdays];
-        break;
-      case 2:
-        cloneWeathers = [...this.state.weathers];
-        cloneScenes = [...this.state.scenes, val];
-        cloneTimeofdays = [...this.state.timeofdays];
-        break;
-      case 3:
-        cloneWeathers = [...this.state.weathers];
-        cloneScenes = [...this.state.scenes];
-        cloneTimeofdays = [...this.state.timeofdays, val];
-        break;
+    if (this.state.model) {
+      var cloneWeathers;
+      var cloneScenes;
+      var cloneTimeofdays;
+      //配列取り出し
+      // eslint-disable-next-line default-case
+      switch (swi) {
+        case 1:
+          cloneWeathers = [...this.state.weathers, val];
+          cloneScenes = [...this.state.scenes];
+          cloneTimeofdays = [...this.state.timeofdays];
+          break;
+        case 2:
+          cloneWeathers = [...this.state.weathers];
+          cloneScenes = [...this.state.scenes, val];
+          cloneTimeofdays = [...this.state.timeofdays];
+          break;
+        case 3:
+          cloneWeathers = [...this.state.weathers];
+          cloneScenes = [...this.state.scenes];
+          cloneTimeofdays = [...this.state.timeofdays, val];
+          break;
+      }
+      this.retrieveImagesOnCondition(
+        cloneWeathers,
+        cloneScenes,
+        cloneTimeofdays,
+        this.state.radio,
+        this.state.model
+      );
     }
-    this.retrieveImagesOnCondition(cloneWeathers, cloneScenes, cloneTimeofdays);
   }
 
   existsSameValue(a) {
@@ -107,6 +182,69 @@ class SelectionData extends Component {
 
   handleChangeRadio(event) {
     this.setState({ radio: event.target.value });
+    if (this.state.model) {
+      this.retrieveImagesOnCondition(
+        this.state.weathers,
+        this.state.scenes,
+        this.state.timeofdays,
+        event.target.value,
+        this.state.model
+      );
+    }
+
+    // if (event.target.value === "all") {
+    //   if (
+    //     this.state.weathers.length ||
+    //     this.state.scenes.length ||
+    //     this.state.timeofdays.length
+    //   ) {
+    //     this.retrieveImagesOnCondition(
+    //       this.state.weathers,
+    //       this.state.scenes,
+    //       this.state.timeofdays
+    //     );
+    //   } else {
+    //     this.retrieveImages();
+    //   }
+    // } else {
+    //   this.getALLdetectImageList(this.state.model, event.target.value);
+    // }
+
+    //
+  }
+
+  getALLdetectImageList(model, sortOfDetect) {
+    console.log(model);
+    console.log(sortOfDetect);
+    imageDataService
+      .getALLdetectImageList(model, sortOfDetect)
+      .then((response) => {
+        //画像名
+        const data = response.data;
+        console.log(data);
+        const dataJpg = data.map((data) => {
+          return data.name + ".jpg";
+        });
+        // console.log(dataJpg)
+        imageDataService
+          .postgetConditionByImagesName(dataJpg)
+          .then((response) => {
+            console.log(response.data);
+            // return {
+            //   attributes: response.data,
+            //   name: dat,
+            // };
+            this.setState({
+              images: response.data,
+            });
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
 
   handleChangeWeather(event) {
@@ -120,6 +258,21 @@ class SelectionData extends Component {
       });
       this.addCondition(val, 1);
     }
+  }
+
+  handleChangeModel(event) {
+    var val = event.target.value;
+    // this.handleClick(event);
+    this.setState({ model: val });
+    this.props.changeModel(val);
+    this.retrieveImages(val);
+    //重複しないなら末尾に追加
+    // if (!this.checkCondition(this.state.model, val)) {
+    //   this.setState((state) => {
+    //     return { weathers: [...state.weathers, val] };
+    //   });
+    //   this.addCondition(val, 1);
+    // }
   }
 
   handleChangeScene(event) {
@@ -151,14 +304,19 @@ class SelectionData extends Component {
   handleClick(e) {
     e.preventDefault();
     this.setState({
-      weathers: [],
-      scenes: [],
-      timeofdays: [],
+      model: "",
       weather: "",
       scene: "",
       timeofday: "",
+      radio: "",
       images: [],
+      imagesWithGroundtruth: [],
+      weathers: [],
+      scenes: [],
+      timeofdays: [],
     });
+    // if(this.state.model)this.retrieveImages();
+    
   }
 
   handleClickFilter(swi, e, weather) {
@@ -209,7 +367,23 @@ class SelectionData extends Component {
         break;
     }
 
-    this.retrieveImagesOnCondition(cloneWeathers, cloneScenes, cloneTimeofdays);
+    if (
+      (cloneWeathers.length || cloneScenes.length || cloneTimeofdays.length) &&
+      this.state.model
+    ) {
+      console.log(
+        "cloneWeathers.length || cloneScenes.length || cloneTimeofdays.length"
+      );
+      this.retrieveImagesOnCondition(
+        cloneWeathers,
+        cloneScenes,
+        cloneTimeofdays,
+        this.state.radio,
+        this.state.model
+      );
+    } else if (this.state.model) {
+      this.retrieveImages(this.state.model);
+    }
   }
 
   // handleSubmit(event) {
@@ -226,6 +400,20 @@ class SelectionData extends Component {
         </button>
         count = {this.props.count}/{this.state.count}/{a}
         <br /> */}
+        <div>
+          モデル選択:
+          <select
+            className={styles.classic}
+            value={this.state.model}
+            onChange={this.handleChangeModel}
+          >
+            <option selected value="nonemodel">
+              Model
+            </option>
+            <option value="m0001">model1</option>
+            <option value="m0002">model2</option>
+          </select>
+        </div>
         メタタグ絞り込み:
         <div>
           <select
@@ -241,7 +429,7 @@ class SelectionData extends Component {
             <option value="clear">clear</option>
             <option value="overcast">overcast</option>
             <option value="undefined">undefined</option>
-            <option value="party cloudy">party cloudy</option>
+            <option value="partly cloudy">partly cloudy</option>
             <option value="foggy">foggy</option>
           </select>
           <select
@@ -320,17 +508,74 @@ class SelectionData extends Component {
           })}
         </div>
         <div>
- 
+          <label>
+            <input
+              type="radio"
+              name="detect"
+              value="all"
+              onChange={(e) => this.handleChangeRadio(e)}
+              // onChange={this.handleChangeRadio}
+            />
+            すべて
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="detect"
+              value="correct"
+              // onChange={this.handleChangeRadio}
+              onChange={(e) => this.handleChangeRadio(e)}
+            />
+            正検出
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="detect"
+              value="misdetect"
+              onChange={(e) => this.handleChangeRadio(e)}
+              // onChange={this.handleChangeRadio}
+            />
+            誤検出
+          </label>
+          <label className={styles.datec}>
+            <input
+              className={styles.datec}
+              type="radio"
+              name="detect"
+              value="misclass"
+              onChange={(e) => this.handleChangeRadio(e)}
+              // onChange={this.handleChangeRadio}
+            />
+            誤分類
+          </label>
+        </div>
+        <div>
           <a href="#" onClick={this.handleClick}>
             全ての条件を解除
           </a>
         </div>
         {this.state.images.map((image) => {
           return (
-            <ImageView
-              onClick={() => this.props.changeCount()}
-              imageName={image.name}
-            ></ImageView>
+            <div>
+              {/* {" "}
+              {image.attributes.weather}aaa */}
+              <ImageView
+                // onClick={() =>
+                //   this.props.changeImage(
+                //     image.name,
+                //     image.attributes.weather,
+                //     image.attributes.scene,
+                //     image.attributes.timeofday
+                //   )
+                // }
+                model={this.state.model}
+                imageName={image.name}
+                imageWeather={image.attributes.weather}
+                imageScene={image.attributes.scene}
+                imageTimeofday={image.attributes.timeofday}
+              ></ImageView>
+            </div>
           );
         })}
         {/* {
@@ -344,7 +589,7 @@ class SelectionData extends Component {
             })}
           </div>
         } */}
-        {this.state.radio}
+        {/* {this.state.radio} */}
       </div>
     );
   }
@@ -366,8 +611,9 @@ const mapStateToProps = (state) => {
 // };
 
 const mapDispatchToProps = (dispatch) => ({
-  changeCount: (count) => dispatch(changeCount()),
-  changeImage: (name) => dispatch(changeImage(name)),
+  changeModel: (model) => dispatch(changeModel(model)),
+  changeImage: (name, weather, scene, timeofday) =>
+    dispatch(changeImage(name, weather, scene, timeofday)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SelectionData);

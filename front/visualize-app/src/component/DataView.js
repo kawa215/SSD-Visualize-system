@@ -68,16 +68,17 @@ class DataView extends Component {
     console.log(boxList);
     if (boxList[0] === "all") boxList.shift();
     imageDataService
-      .getDetectBoxList(boxList, imageName)
+      .getDetectBoxList(boxList, imageName, this.props.model)
       .then((response) => {
         console.log(response);
         var copyResponseData = response.data;
         const data = copyResponseData.map((data) => {
-          const detectName = data[5].replace(".png", "");
+          //変更必要
+          const detectName = data[6].replace(".png", "");
           return {
-            box: data[2],
-            class: data[3],
-            score: data[4],
+            box: data[3],
+            class: data[4],
+            score: data[5],
             detect: detectName,
           };
         });
@@ -110,7 +111,7 @@ class DataView extends Component {
   returnURLimg(imageName) {
     console.log(imageName);
     imageDataService
-      .getBoxList(this.props.image)
+      .getBoxList(this.props.image, this.props.model)
       .then((response) => {
         console.log(response);
         this.setState({
@@ -131,10 +132,14 @@ class DataView extends Component {
     if (box === "all") {
       console.log("allのif");
       URL =
-        this.state.selectBoxName +
+        "http://localhost:4000/box/" +
         this.props.image.replace(".jpg", "") +
         "/" +
+        this.props.model +
+        "/" +
         this.props.image.replace(".jpg", "") +
+        "_" +
+        this.props.model +
         "_detect_all.png";
 
       this.setState({ boxImageURL: URL });
@@ -142,7 +147,7 @@ class DataView extends Component {
       console.log("all以外！↓");
       //b1c9c847-3bda4659_detect_7759_car_0.844_correct
       imageDataService
-        .getBoxImage(box, this.props.image)
+        .getBoxImage(box, this.props.image, this.props.model)
         .then((response) => {
           // console.log(response);
           // this.setState({
@@ -152,6 +157,8 @@ class DataView extends Component {
           URL =
             "http://localhost:4000/box/" +
             this.props.image.replace(".jpg", "") +
+            "/" +
+            this.props.model +
             "/" +
             box +
             "/" +
@@ -312,8 +319,8 @@ class DataView extends Component {
             <option value="motor">Motor</option>
             <option value="person">Person</option>
             <option value="rider">Rider</option>
-            <option value="traffic light">Traffic light</option>
-            <option value="traffic sign">Traffic sign</option>
+            <option value="traffic-light">Traffic light</option>
+            <option value="traffic-sign">Traffic sign</option>
             <option value="train">Train</option>
             <option value="truck">Truck</option>
           </select>
@@ -328,9 +335,13 @@ class DataView extends Component {
                 "http://localhost:4000/box/" +
                 this.props.image.replace(".jpg", "") +
                 "/" +
+                this.props.model +
+                "/" +
                 this.state.box +
                 "/" +
                 this.props.image.replace(".jpg", "") +
+                "_" +
+                this.props.model +
                 "_attr_" +
                 this.state.box +
                 "_" +
@@ -352,9 +363,13 @@ class DataView extends Component {
                 "http://localhost:4000/box/" +
                 this.props.image.replace(".jpg", "") +
                 "/" +
+                this.props.model +
+                "/" +
                 this.state.box +
                 "/" +
                 this.props.image.replace(".jpg", "") +
+                "_" +
+                this.props.model +
                 "_attr_" +
                 this.state.box +
                 "_" +
@@ -378,9 +393,13 @@ class DataView extends Component {
                   "http://localhost:4000/box/" +
                     this.props.image.replace(".jpg", "") +
                     "/" +
+                    this.props.model +
+                    "/" +
                     this.state.box +
                     "/" +
                     this.props.image.replace(".jpg", "") +
+                    "_" +
+                    this.props.model +
                     "_attr_" +
                     this.state.box +
                     "_" +
@@ -410,9 +429,13 @@ class DataView extends Component {
                   "http://localhost:4000/box/" +
                     this.props.image.replace(".jpg", "") +
                     "/" +
+                    this.props.model +
+                    "/" +
                     this.state.box +
                     "/" +
                     this.props.image.replace(".jpg", "") +
+                    "_" +
+                    this.props.model +
                     "_attr_" +
                     this.state.box +
                     "_" +
@@ -440,6 +463,7 @@ const mapStateToProps = (state) => {
     scene: state.scene,
     timeofday: state.timeofday,
     count: state.count,
+    model: state.model,
   };
 };
 

@@ -1,29 +1,50 @@
-import { userApi, boxApi } from "../http-common";
+// import { model } from "mongoose";
+import { databaseApi, boxApi } from "../http-common";
 
 class ImageDataService {
   getAll() {
-    return userApi.get("/vals");
+    return databaseApi.get("/vals");
   }
 
   // getBoxImage() {}
 
-  getBoxList(imageName) {
-    return boxApi.get(`/${imageName}`);
-  }
-
-  getDetectBoxList(boxList, imageName) {
-    console.log(boxList);
-    // return boxApi.get(`/detect/detectBoxes/${boxList}`);
-    return boxApi.get("/detect/detectBoxes", {
-      params: { boxList: boxList, imageName: imageName },
+  getBoxList(imageName, model) {
+    return boxApi.get("/imageName", {
+      params: { imageName: imageName, model: model },
     });
   }
 
-  getBoxImage(box, imageName) {
+  getALLdetectImageList(model, sortOfDetect) {
+    console.log(sortOfDetect);
+    return boxApi.get("/detect/sortofdetect", {
+      params: { model: model, sortOfDetect: sortOfDetect },
+    });
+  }
+
+  getDetectSelectedImageList(model, sortOfDetect, imageList) {
+    console.log("getDetectSelectedImageList");
+    return boxApi.post("/detect/SelectedImage/sortofdetect", {
+      params: {
+        model: model,
+        sortOfDetect: sortOfDetect,
+        imageList: imageList,
+      },
+    });
+  }
+
+  getDetectBoxList(boxList, imageName, model) {
+    console.log(boxList);
+    // return boxApi.get(`/detect/detectBoxes/${boxList}`);
+    return boxApi.get("/detect/detectBoxes", {
+      params: { boxList: boxList, imageName: imageName, model: model },
+    });
+  }
+
+  getBoxImage(box, imageName, model) {
     console.log(box);
     // return boxApi.get(`/detect/detectBoxes/${boxList}`);
     return boxApi.get("/detect/boxImage", {
-      params: { box: box, imageName: imageName },
+      params: { box: box, imageName: imageName, model: model },
     });
   }
 
@@ -31,22 +52,30 @@ class ImageDataService {
     console.log("getvals:");
     console.log(weathers);
 
-    return userApi.get("/vals/conditions", {
+    return databaseApi.get("/vals/conditions", {
       params: { weathers: weathers, scenes: scenes, timeofdays: timeofdays },
     });
   }
 
   get(id) {
-    return userApi.get(`/vals/${id}`);
+    return databaseApi.get(`/vals/${id}`);
   }
 
   getConditionByName(name) {
-    return userApi.get(`/vals/${name}`);
+    return databaseApi.get(`/vals/${name}`);
   }
 
-  // create(data) {
-  //   return http.post("/vals", data);
-  // }
+  getConditionByImagesName(imagesName) {
+    console.log("getConditionByImagesName");
+    console.log(imagesName);
+    return databaseApi.get("/vals/images", {
+      params: { imagesName: imagesName },
+    });
+  }
+
+  postgetConditionByImagesName(imagesName) {
+    return databaseApi.post("/vals/images", imagesName);
+  }
 
   // update(id, data) {
   //   return http.put(`/vals/${id}`, data);

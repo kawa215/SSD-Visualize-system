@@ -1,3 +1,4 @@
+// import { model } from "mongoose";
 import { createStore } from "redux";
 
 // export const deleteName = () => ({
@@ -7,6 +8,7 @@ import { createStore } from "redux";
 const initialState = {
   count: 2,
   radio: "",
+  model: "",
   image: "",
   weather: "",
   scene: "",
@@ -16,13 +18,17 @@ const initialState = {
 };
 
 // 引数nameをとり、{type: "ADD_NAME", name: name}を返すjsの関数。
-export const changeCount = () => ({
-  type: "CHNGE_COUNT",
+export const changeModel = (model) => ({
+  type: "CHNGE_MODEL",
+  model: model,
 });
 
-export const changeImage = (name) => ({
+export const changeImage = (name, weather, scene, timeofday) => ({
   type: "CHANGE_IMAGE",
   name: name,
+  weather: weather,
+  scene: scene,
+  timeofday: timeofday,
 });
 
 // export const addTargetImage = (image, weather, scene, timeofday) => ({
@@ -81,7 +87,7 @@ const reducer = (state = initialState, action) => {
       //重複チェック
       // Array.from(new Set(array1));
       console.log("ADD_IMAGES");
-      console.log(action)
+      console.log(action);
       cloneTargets = [...state.target_images];
       const targetImage = {
         name: action.image,
@@ -174,15 +180,20 @@ const reducer = (state = initialState, action) => {
           factor_images: cloneFactorImages,
         };
       }
-    case "CHNGE_COUNT":
+    case "CHNGE_MODEL":
       return {
         ...state,
-        count: state.count + 1,
+        model: action.model,
       };
     case "CHANGE_IMAGE":
+      console.log("CHANGE_IMAGE")
+      console.log(action)
       return {
         ...state,
         image: action.name,
+        weather: action.weather,
+        scene: action.scene,
+        timeofday: action.timeofday,
       };
     case "CHANGE_CONDITION":
       console.log("readuceきた");
