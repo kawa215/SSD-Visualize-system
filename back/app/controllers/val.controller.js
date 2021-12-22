@@ -20,6 +20,34 @@ exports.findAll = (req, res) => {
     });
 };
 
+// Create and Save a new Tutorial
+exports.create = (req, res) => {
+  // Validate request
+  if (!req.body.title) {
+    res.status(400).send({ message: "Content can not be empty!" });
+    return;
+  }
+
+  // Create a Tutorial
+  const tutorial = new Tutorial({
+    title: req.body.title,
+    description: req.body.description,
+    published: req.body.published ? req.body.published : false,
+  });
+
+  // Save Tutorial in the database
+  tutorial
+    .save(tutorial)
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the Tutorial.",
+      });
+    });
+};
 // exports.findBoxList = (req, res) => {
 //   console.log("find all");
 //   var field = { name: 1, attributes: 1, _id: 0 };
@@ -105,7 +133,7 @@ exports.findVals = (req, res) => {
   //   "attributes.timeofday": { $in: req.query.timeofdays },
   // };
 
-  var field = { name: 1, attributwes: 1, _id: 0 };
+  var field = { name: 1, attributes: 1, _id: 0 };
   var numofsheets = 21;
   console.log("condition:");
   console.log(condition);
@@ -113,8 +141,8 @@ exports.findVals = (req, res) => {
   Val.find(condition, field)
     // .limit(numofsheets)
     .then((data) => {
+      console.log("data:" + data);
       res.send(data);
-      // console.log("data:" + data);
     })
     .catch((err) => {
       res.status(500).send({
@@ -136,10 +164,57 @@ exports.findOneCondition = (req, res) => {
       console.log(data);
       if (!data)
         res.status(404).send({ message: "Not found Val with id " + id });
-      else res.send(data);
+      else res.send(data[0]);
     })
     .catch((err) => {
       res.status(500).send({ message: "Error retrieving Val with id=" + id });
+    });
+};
+
+exports.findConditions = (req, res) => {
+  console.log("---findconditions--");
+  // condition = {
+  //   "attributes.weather": { $in: req.query.weathers },
+  //   "attributes.scene": { $in: req.query.scenes },
+  // };
+  console.log(req.query.imagesName);
+  const condition = {
+    name: { $in: req.query.imagesName },
+  };
+  const field = { name: 1, attributes: 1, _id: 0 };
+
+  Val.find(condition, field)
+    .then((data) => {
+      console.log(data);
+      if (!data) res.status(404).send({ message: "Not found" });
+      else res.send(data[0]);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: "Error retrieving Val" });
+    });
+};
+
+exports.postfindConditions = (req, res) => {
+  console.log("---postfindconditions--");
+  // condition = {
+  //   "attributes.weather": { $in: req.query.weathers },
+  //   "attributes.scene": { $in: req.query.scenes },
+  // };
+  console.log(req.body);
+
+  const condition = {
+    name: { $in: req.body },
+  };
+  const field = { name: 1, attributes: 1, _id: 0 };
+
+  Val.find(condition, field)
+    .then((data) => {
+      console.log(data);
+      if (!data) res.status(404).send({ message: "Not found" });
+      else res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: "Error retrieving Val" });
     });
 };
 
