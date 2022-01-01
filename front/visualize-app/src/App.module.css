@@ -3,4 +3,24 @@
     width: 100vw;
     height: 100vh;
   }
+
+.Tabs {
+  position: absolute;
+  left: 470px;
+  top: 45px;
+  margin: 0;
+  margin-top: 10px;
+  /* margin-bottom: 0; */
   
+} 
+
+.margin {
+  margin: 0;
+  padding: 0;
+  border-radius: 0px 8px 8px 8px;
+
+}
+
+.border {
+  /* border-style: none; */
+}

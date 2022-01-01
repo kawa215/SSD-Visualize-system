@@ -1,13 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 /* eslint-disable jsx-a11y/alt-text */
 import React, { Component } from "react";
-import styles from "./DataView.module.css";
+import styles from "./DetectionMode.module.css";
 import { connect } from "react-redux";
 import { addImages } from "../store/index";
-import Sample from "./sample.png";
-// import ImageDataService from "../services/Image.service";
 import imageDataService from "../services/Image.service";
-class DataView extends Component {
+
+class DetectionMode extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -496,4 +495,4 @@ const mapDispatchToProps = (dispatch) => ({
     ),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DataView);
+export default connect(mapStateToProps, mapDispatchToProps)(DetectionMode);
