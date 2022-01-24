@@ -3,5 +3,8 @@
 # dependencies
 /node_modules
 /val
+/heatmaps.q1000.20211226
+/heatmaps.q1000.20220103
+/heatmaps.q1000.20220103.zip
 /.pnp
 .pnp.js

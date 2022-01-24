@@ -21,10 +21,12 @@ app.use("/vals", express.static("val"));
 
 app.use("/viss", express.static("vis"));
 
-app.use("/box", express.static("heatmaps.q1000.20211215"));
+app.use("/box", express.static("heatmaps.q1000.20220103"));
 
-const searchFiles = (dirPath, searchFileName) => {
+// ディレクトリ配下にあるファイルを再帰的に探索する
+const searchFiles = (dirPath, searchFileName, i) => {
   var allDirents;
+  console.log("--searchFiles--");
   try {
     allDirents = fs.readdirSync(dirPath, { withFileTypes: true });
   } catch (err) {
@@ -37,7 +39,7 @@ const searchFiles = (dirPath, searchFileName) => {
     if (dirent.isDirectory()) {
       const fp = path.join(dirPath, dirent.name);
 
-      files.push(searchFiles(fp, searchFileName));
+      files.push(searchFiles(fp, searchFileName, i));
     } else if (
       dirent.isFile() &&
       path.basename(dirent.name).includes(searchFileName)
@@ -48,8 +50,15 @@ const searchFiles = (dirPath, searchFileName) => {
       });
     }
   }
+  // console.log("--searchFiles--")
+
   files.flat();
-  return files[0];
+  console.log(files);
+  if (i == 1) {
+    return files[0];
+  } else {
+    return files;
+  }
 };
 
 // HTTPリクエストを受け取る部分
@@ -57,6 +66,7 @@ app.get("/", function (req, res) {
   res.send("Hello World!");
 });
 
+// boxのリストを返す
 app.get("/imageName", function (req, res) {
   console.log("-----------");
   const imageName = req.query.imageName;
@@ -64,7 +74,7 @@ app.get("/imageName", function (req, res) {
 
   let ret = imageName.replace(".jpg", "");
 
-  const dirPath = "heatmaps.q1000.20211215/" + ret + "/" + model;
+  const dirPath = "heatmaps.q1000.20220103/" + ret + "/" + model;
 
   console.log("imageNameきた！");
   console.log(dirPath);
@@ -81,6 +91,58 @@ app.get("/imageName", function (req, res) {
   res.send(fileNames);
 });
 
+// HTTPリクエストを受け取る部分
+app.get("/", function (req, res) {
+  res.send("Hello World!");
+});
+
+// 選択された可視化手法に対してクラスの一覧を取得する
+app.get("/boxVisualization/classList", function (req, res) {
+  console.log("-----/boxVisualization/classList------");
+  const model = req.query.model;
+  const imageName = req.query.imageName;
+  const box = req.query.box;
+
+  const method = req.query.method;
+
+  let ret = imageName.replace(".jpg", "");
+
+  const dirPath = "heatmaps.q1000.20220103/" + ret + "/" + model + "/" + box;
+
+  var arrayOfClass = null;
+
+  console.log(method);
+  if (method) {
+    var targetClassArray = searchFiles(dirPath, method, 0);
+    console.log(targetClassArray);
+    if (targetClassArray !== undefined) {
+      //boxとdetext とclas確信ど取り出し
+      arrayOfClass = targetClassArray.map((targetClass) => {
+        var pattern = /[\_]/;
+        var splitArray = targetClass.name.split(pattern);
+        console.log(splitArray);
+        return splitArray[splitArray.length - 1].replace(".png", "");
+      });
+      console.log(arrayOfClass);
+    }
+  }
+
+  // console.log("imageNameきた！");
+  // console.log(dirPath);
+
+  // // "path/to/target" 直下のファイルやディレクトリ全てがDirentオブジェクトの配列で返ってくる
+  // const allDirents = fs.readdirSync(dirPath, { withFileTypes: true });
+
+  // const fileNames = allDirents
+  //   .filter((dirent) => !dirent.isFile())
+  //   .map(({ name }) => name);
+
+  // console.log("-----------");
+  // fileNames.unshift("all");
+  res.send(arrayOfClass);
+  // console.log(arrayOfClass);
+});
+
 app.get("/detect/sortofdetect", function (req, res) {
   console.log("--/detect/detectBoxes/:sortOfDetect--");
   const sortOfDetect = req.query.sortOfDetect;
@@ -93,7 +155,7 @@ app.get("/detect/sortofdetect", function (req, res) {
   //　画像名
 
   //画像名一覧
-  var dirPath = "heatmaps.q1000.20211215";
+  var dirPath = "heatmaps.q1000.20220103";
   // "path/to/target" 直下のファイルやディレクトリ全てがDirentオブジェクトの配列で返ってくる
   const allDirents = fs.readdirSync(dirPath, { withFileTypes: true });
   const directoryImageNames = allDirents.filter((dirent) => !dirent.isFile());
@@ -108,10 +170,10 @@ app.get("/detect/sortofdetect", function (req, res) {
       // console.log(dirPath)
       // console.log(dirPath)
       // console.log(sortOfDetect)
-      if (searchFiles(dirPath, sortOfDetect + ".png") !== undefined) {
+      if (searchFiles(dirPath, sortOfDetect + ".png", 1) !== undefined) {
         detectImageArray.push(directoryImageNames[i]);
       }
-      dirPath = "./heatmaps.q1000.20211215";
+      dirPath = "./heatmaps.q1000.20220103";
     }
     res.send(detectImageArray);
   } else {
@@ -133,7 +195,7 @@ app.post("/detect/SelectedImage/sortofdetect", function (req, res) {
   //　画像名
 
   //画像名一覧
-  var dirPath = "heatmaps.q1000.20211215";
+  var dirPath = "heatmaps.q1000.20220103";
   // "path/to/target" 直下のファイルやディレクトリ全てがDirentオブジェクトの配列で返ってくる
   // const allDirents = fs.readdirSync(dirPath, { withFileTypes: true });
   // const directoryImageNames = allDirents.filter((dirent) => !dirent.isFile());
@@ -145,15 +207,15 @@ app.post("/detect/SelectedImage/sortofdetect", function (req, res) {
   console.log(directoryImageNames);
   for (var i = 0; i < directoryImageNames.length; i++) {
     dirPath = dirPath + "/" + directoryImageNames[i] + "/" + model;
-    if (searchFiles(dirPath, sortOfDetect + ".png") !== undefined) {
+    if (searchFiles(dirPath, sortOfDetect + ".png", 1) !== undefined) {
       detectImageArray.push(directoryImageNames[i]);
     }
-    dirPath = "./heatmaps.q1000.20211215";
+    dirPath = "./heatmaps.q1000.20220103";
   }
   res.send(detectImageArray);
 });
 
-//boxの番号
+//return box detect  class 確信度
 app.get("/detect/detectBoxes", function (req, res) {
   console.log("---/detect/detectBoxes--------");
 
@@ -164,7 +226,7 @@ app.get("/detect/detectBoxes", function (req, res) {
 
   let ret = imageName.replace(".jpg", "");
 
-  const dirPath = "heatmaps.q1000.20211215/" + ret + "/" + model;
+  const dirPath = "heatmaps.q1000.20220103/" + ret + "/" + model;
   const arrayDetectAns = fileNames.map((fileName) => {
     const detectPath = dirPath + "/" + fileName;
     const alldetectDirents = fs.readdirSync(detectPath, {
@@ -200,7 +262,7 @@ app.get("/detect/boxImage", function (req, res) {
   // console.log(fileNames)
   let ret = imageName.replace(".jpg", "");
 
-  const dirPath = "heatmaps.q1000.20211215/" + ret + "/" + model;
+  const dirPath = "heatmaps.q1000.20220103/" + ret + "/" + model;
   // const arrayDetectAns = fileNames.map((fileName) => {
   const detectPath = dirPath + "/" + box;
   const alldetectDirents = fs.readdirSync(detectPath, {
