@@ -2,7 +2,7 @@
   display: flex;
   width: 1430px;
   /* margin-left: 15px; */
-  height: 550px;
+  height: 565px;
   background-color: white;
   /* background-color: red; */
   /* margin-top: 10px; */
@@ -39,7 +39,7 @@
 
 .button03 a {
   position: absolute;
-  top: 520px;
+  top: 540px;
   right: 220px;
   display: flex;
   justify-content: space-between;
@@ -74,11 +74,10 @@
   border-right: 3px solid #333333;
 }
 
-
 .button04 a {
   position: absolute;
-  top: 420px;
-  right: 220px;
+  top: 440px;
+  right: 380px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -196,8 +195,10 @@ label.datec {
 }
 
 .visualizeImages {
-  width: 460px;
+  width: 500px;
   height: 540px;
+  margin-top: 38px;
+  margin-left: 15px;
   /* background-color: aquamarine; */
 }
 
@@ -209,10 +210,16 @@ label.datec {
   /* background-color: aquamarine; */
 }
 
+.canvas {
+  /* background-color: black; */
+}
+
 .visualize {
   /* position: absolute; */
-  width: 450px;
-  height: auto;
+  /* margin-top: 38px; */
+  width: 500px;
+  height: 300px;
+  /* opacity: 0.9; */
   /* top: 0px;
   right: 350px; */
   /* widt5: 380px;
@@ -224,3 +231,83 @@ label.datec {
   /* margin-top: 10px;
   margin-bottom: 15px; */
 }
+
+.toumei {
+  /* position: relative; */
+  overflow: hidden;
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+  cursor: zoom-in
+}
+
+.zoomImgSection {
+  background-repeat: no-repeat;
+  
+  width: 500px;
+  height: 300px;
+}
+
+.toumei:hover .toumei2 .toumei3 {
+  opacity: 0;
+
+}
+
+.toumei2 {
+  position: absolute;
+  width: 500px;
+  height: 300px;
+  top: 0;
+  left: 0;
+  opacity: 1;
+
+  /* width: 100%; */
+  /* display: block; */
+  pointer-events: none;
+}
+
+.toumei3 {
+  position: absolute;
+  width: 500px;
+  height: 300px;
+  top: 0;
+  left: 0;
+  /* opacity: 0.3; */
+}
+
+.slide {
+  margin-top: 30px;
+  width: 100%;
+}
+
+.slider {
+  /* background-color: red; */
+  color: black !important;
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: yellow;
+}
+/* 
+.canvas::after{
+
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+
+  right: 0;
+
+  bottom: 0;
+
+  left: 0;
+
+  background-color: black;
+
+  opacity: 0.1;
+
+  display:block
+
+} */

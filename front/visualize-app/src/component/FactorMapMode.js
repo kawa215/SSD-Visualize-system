@@ -5,7 +5,9 @@ import styles from "./FactorMapMode.module.css";
 import { connect } from "react-redux";
 import { addImages } from "../store/index";
 import imageDataService from "../services/Image.service";
-
+import Slider from "react-slick";
+import { Slider as A } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 class FactorMapMode extends Component {
   constructor(props) {
     super(props);
@@ -19,9 +21,17 @@ class FactorMapMode extends Component {
       detectBoxList: [],
       classes: [],
       boxImageURL: "",
+      factorImageURL: "",
       selectBoxName: "http://localhost:4000/box/",
-      // props.image
-      // "_detect_all.png",
+      opacity: 0.99,
+      zoom: 1,
+      style: {
+        backgroundPosition: "0% 0%",
+        transformOrigin: "50% 50%",
+        transform: "scale(1)",
+      },
+      pose: false,
+      scale: 2.5,
     };
 
     this.handleChangeBox = this.handleChangeBox.bind(this);
@@ -30,15 +40,35 @@ class FactorMapMode extends Component {
     this.returnURLimg = this.returnURLimg.bind(this);
     this.returnFileNNamesDetectBox = this.returnFileNNamesDetectBox.bind(this);
     this.handleChangeRadio = this.handleChangeRadio.bind(this);
+    this.handleChangeOpacity = this.handleChangeOpacity.bind(this);
     this.returnBoxImg = this.returnBoxImg.bind(this);
+    this.addImages = this.addImages.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseOver = this.onMouseOver.bind(this);
+    this.onMouseLeave = this.onMouseLeave.bind(this);
+    this.activatePose = this.activatePose.bind(this);
+    this.handleChangeScale = this.handleChangeScale.bind(this);
+    this.returnALLorFactorImageURL = this.returnALLorFactorImageURL.bind(this);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.image !== prevProps.image) {
+    if (
+      this.props.image !== prevProps.image ||
+      this.props.model !== prevProps.model
+    ) {
       console.log("-----------");
       console.log(this.props.image);
       console.log(prevProps.image);
-      this.setState({ box: "all" });
+      this.setState({
+        box: "all",
+        classes: [],
+        pose: false,
+        style: {
+          backgroundPosition: "0% 0%",
+          transformOrigin: "50% 50%",
+          transform: "scale(1)",
+        },
+      });
       this.returnURLimg(this.props.image);
       console.log(this.state.box);
       this.returnBoxImg("all");
@@ -46,17 +76,111 @@ class FactorMapMode extends Component {
     }
   }
 
+  returnALLorFactorImageURL() {
+    console.log("--------------------returnFactororALL");
+    console.log(this.state.box);
+    var imageURL;
+    if (this.state.box === "all") {
+      imageURL = this.state.boxImageURL;
+      return imageURL;
+    } else {
+      imageURL =
+        "http://localhost:4000/box/" +
+        this.props.image.replace(".jpg", "") +
+        "/" +
+        this.props.model +
+        "/" +
+        this.state.box +
+        "/" +
+        this.props.image.replace(".jpg", "") +
+        "_" +
+        this.props.model +
+        "_attr_" +
+        this.state.box +
+        "_" +
+        this.state.method +
+        "_" +
+        this.state.class +
+        ".png";
+      return imageURL;
+    }
+  }
+
   handleChangeRadio(e) {
-    // e.preventDefault();
     console.log("--handleChangeRadio---------");
     this.setState({ detect: e.target.value });
-    // this.returnBoxImg();
     if (e.target.value === "all") {
       this.returnURLimg(this.props.image);
     } else {
       this.returnFileNNamesDetectBox(this.state.storeBoxList, this.props.image);
     }
     console.log("----無事終わり-------");
+  }
+
+  handleChangeOpacity(e) {
+    this.setState({ opacity: e.target.value });
+  }
+
+  handleChangeScale(e) {
+    this.onMouseOver();
+    this.setState({ scale: e.target.value });
+  }
+
+  onMouseMove(event) {
+    console.log("--------onMouseMove");
+    if (!this.state.pose) {
+      const { left, top, width } = event.currentTarget.getBoundingClientRect();
+      console.log(event.currentTarget.getBoundingClientRect());
+      console.log(event.pageX);
+      console.log(event.pageY);
+      const height = 350;
+      const x = ((event.pageX - left) / width) * 100;
+      const y = ((event.pageY - 175) / height) * 100;
+
+      this.setState((prevState) => ({
+        style: {
+          ...prevState.style, // copy all other key-value pairs of food object
+          // copy all pizza key-value pairs
+          transformOrigin: `${x}% ${y}%`,
+          backgroundPosition: `${x}% ${y}%`, // update value of specific key
+        },
+      }));
+    }
+  }
+
+  onMouseOver() {
+    console.log("--------onMouseOver");
+    this.setState({ ...this.state });
+    this.setState((prevState) => ({
+      style: {
+        ...prevState.style, // copy all other key-value pairs of food object
+        // copy all pizza key-value pairs
+        transform: `scale(${this.state.scale})`, // update value of specific key
+      },
+    }));
+  }
+
+  activatePose() {
+    if (!this.state.pose) {
+      this.setState({
+        pose: true,
+      });
+    } else {
+      this.setState({
+        pose: false,
+      });
+    }
+  }
+
+  onMouseLeave() {
+    console.log("--------onMouseLeave");
+    this.setState((prevState) => ({
+      style: {
+        ...prevState.style, // copy all other key-value pairs of food object
+        // copy all pizza key-value pairs
+        transform: `scale(${this.state.scale})`, // update value of specific key
+      },
+    }));
   }
 
   returnFileNNamesDetectBox(boxList, imageName) {
@@ -148,11 +272,6 @@ class FactorMapMode extends Component {
       imageDataService
         .getBoxImage(box, this.props.image, this.props.model)
         .then((response) => {
-          // console.log(response);
-          // this.setState({
-          //   boxList: response.data,
-          //   storeBoxList: response.data,
-          // });
           URL =
             "http://localhost:4000/box/" +
             this.props.image.replace(".jpg", "") +
@@ -164,24 +283,10 @@ class FactorMapMode extends Component {
             response.data;
           console.log(URL);
           this.setState({ boxImageURL: URL });
-          // console.log(URL);
-          // return URL;
         })
         .catch((e) => {
           console.log(e);
         });
-      // console.log(URL);
-      // return URL;
-      // return (
-      //   this.state.selectBoxName +
-      //   this.props.image.replace(".jpg", "") +
-      //   "/" +
-      //   this.state.box +
-      //   "/" +
-      //   this.props.image.replace(".jpg", "") +
-      //   "_detect_" +
-      //   this.props.box + "_" + this.props.
-      // );
     }
   }
 
@@ -192,13 +297,96 @@ class FactorMapMode extends Component {
 
   handleChangeMethod(event) {
     this.setState({ method: event.target.value });
+    this.getClassList(
+      this.props.model,
+      this.props.image,
+      this.state.box,
+      event.target.value
+    );
   }
 
   handleChangeClass(event) {
     this.setState({ class: event.target.value });
   }
 
+  getClassList(model, imageName, box, method) {
+    imageDataService
+      .getClassList(model, imageName, box, method)
+      .then((response) => {
+        console.log(response);
+        if (response.data) {
+          this.setState({
+            classes: response.data,
+          });
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  addImages() {
+    var visualizedImageURL;
+    const imageWithoutJpg = this.props.image.replace(".jpg", "");
+    if (this.state.box === "all") {
+      // console.log("addimages: all")
+      // console.log())
+      visualizedImageURL =
+        "http://localhost:4000/box/" +
+        imageWithoutJpg +
+        "/" +
+        this.props.model +
+        "/" +
+        imageWithoutJpg +
+        "_" +
+        this.props.model +
+        "_detect_all.png";
+    } else {
+      console.log("addimages: box");
+      visualizedImageURL =
+        "http://localhost:4000/box/" +
+        imageWithoutJpg +
+        "/" +
+        this.props.model +
+        "/" +
+        this.state.box +
+        "/" +
+        imageWithoutJpg +
+        "_" +
+        this.props.model +
+        "_attr_" +
+        this.state.box +
+        "_" +
+        this.state.method +
+        "_" +
+        this.state.class +
+        ".png";
+    }
+
+    this.props.addImages(
+      this.props.image,
+      this.props.weather,
+      this.props.scene,
+      this.props.timeofday,
+      this.state.boxImageURL,
+      this.state.box,
+      visualizedImageURL,
+      this.state.detect,
+      this.state.method,
+      this.state.class
+    );
+  }
+
   render() {
+    const settings = {
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: true,
+    };
+
     // this.retrieveConditions(this.props.image);
     return (
       <div className={styles.DataView}>
@@ -210,21 +398,7 @@ class FactorMapMode extends Component {
             <span className={styles.weather}>{this.props.scene}</span>
             <span className={styles.weather}>{this.props.timeofday}</span>
           </div>
-          <img
-            // src={"http://localhost:4000/vals/" + this.props.image}
-            // src={"http://localhost:4000/vals/" + this.props.image}
-            // src={this.returnURLimg(this.props.image)}
-            src={
-              // this.returnBoxImg(this.state.box)
-              this.state.boxImageURL
-              // this.state.selectBoxName +
-              // this.props.image.replace(".jpg", "") +
-              // "/" +
-              // this.props.image.replace(".jpg", "") +
-              // "_detect_all.png"
-            }
-            className={styles.img}
-          ></img>
+          <img alt="" src={this.state.boxImageURL} className={styles.img}></img>
           <label>
             <input
               type="radio"
@@ -312,143 +486,128 @@ class FactorMapMode extends Component {
             <option selected value="">
               class
             </option>
-            <option value="bike">Bike</option>
-            <option value="bus">Bus</option>
-            <option value="car">Car</option>
-            <option value="motor">Motor</option>
-            <option value="person">Person</option>
-            <option value="rider">Rider</option>
-            <option value="traffic-light">Traffic light</option>
-            <option value="traffic-sign">Traffic sign</option>
-            <option value="train">Train</option>
-            <option value="truck">Truck</option>
+            {this.state.classes.map((clas, index) => {
+              return <option value={clas}>{clas}</option>;
+            })}
           </select>
         </div>
         <div className={styles.visualizeImages}>
-          <div className={styles.visualizeImage}>
+          {/* <h2> </h2> */}
+          <Slider {...settings} className={styles.slider} color="black">
             <div>
-              {this.state.box}_{this.state.method}_{this.state.class}
+              <h3>
+                {" "}
+                {this.state.box}_{this.state.method}_{this.state.class}
+              </h3>
+
+              <img
+                src={
+                  this.state.box === "all"
+                    ? this.state.boxImageURL
+                    : "http://localhost:4000/box/" +
+                      this.props.image.replace(".jpg", "") +
+                      "/" +
+                      this.props.model +
+                      "/" +
+                      this.state.box +
+                      "/" +
+                      this.props.image.replace(".jpg", "") +
+                      "_" +
+                      this.props.model +
+                      "_attr_" +
+                      this.state.box +
+                      "_" +
+                      this.state.method +
+                      "_" +
+                      this.state.class +
+                      ".png"
+                }
+                className={styles.visualize}
+
+                // alt="可視化手法とクラス"
+              ></img>
             </div>
-            <img
-              src={
-                "http://localhost:4000/box/" +
-                this.props.image.replace(".jpg", "") +
-                "/" +
-                this.props.model +
-                "/" +
-                this.state.box +
-                "/" +
-                this.props.image.replace(".jpg", "") +
-                "_" +
-                this.props.model +
-                "_attr_" +
-                this.state.box +
-                "_" +
-                this.state.method +
-                "_" +
-                this.state.class +
-                ".png"
-              }
-              // className={styles.img}
-              className={styles.visualize}
-            ></img>
-          </div>
-          <div className={styles.visualizeImage}>
             <div>
-              {this.state.box}_{this.state.method}_bg
+              <h3>
+                {" "}
+                {this.state.box}_{this.state.method}_{this.state.class}
+              </h3>
+              <div className={styles.toumei}>
+                <div
+                  onMouseMove={(e) => this.onMouseMove(e)}
+                  onMouseOver={this.onMouseOver}
+                  onMouseLeave={this.onMouseLeave}
+                  onClick={this.activatePose}
+                  className={styles.zoomImgSection}
+                  style={{
+                    height: "300px",
+                    background: `url(${this.state.boxImageURL}) ${this.state.style.backgroundPosition}`,
+                    transformOrigin: this.state.style.transformOrigin,
+                    transform: this.state.style.transform,
+                  }}
+                >
+                  <img
+                    src={this.state.boxImageURL}
+                    className={styles.toumei2}
+                    // alt="可視化手法とクラス"
+                  ></img>
+                  <img
+                    src={
+                      "http://localhost:4000/box/" +
+                      this.props.image.replace(".jpg", "") +
+                      "/" +
+                      this.props.model +
+                      "/" +
+                      this.state.box +
+                      "/" +
+                      this.props.image.replace(".jpg", "") +
+                      "_" +
+                      this.props.model +
+                      "_attr_" +
+                      this.state.box +
+                      "_" +
+                      this.state.method +
+                      "_" +
+                      this.state.class +
+                      ".png"
+                    }
+                    className={styles.toumei3}
+                    style={{
+                      opacity: `${this.state.opacity}`,
+                    }}
+                  ></img>
+                </div>
+              </div>
             </div>
-            <img
-              src={
-                "http://localhost:4000/box/" +
-                this.props.image.replace(".jpg", "") +
-                "/" +
-                this.props.model +
-                "/" +
-                this.state.box +
-                "/" +
-                this.props.image.replace(".jpg", "") +
-                "_" +
-                this.props.model +
-                "_attr_" +
-                this.state.box +
-                "_" +
-                this.state.method +
-                "_bg.png"
-              }
-              // className={styles.img}
-              className={styles.visualize}
-            ></img>
+          </Slider>
+
+          <div className={styles.slide}>
+            <Box sx={{ width: 260 }}>
+              マスク調節:
+              <A
+                valueLabelDisplay="on"
+                min={0.01}
+                max={0.99}
+                step={0.01}
+                aria-label="Volume"
+                value={this.state.opacity}
+                onChange={(e) => this.handleChangeOpacity(e)}
+              />
+              拡大スケール:
+              <A
+                valueLabelDisplay="on"
+                min={1}
+                max={4}
+                step={0.2}
+                aria-label="Volume"
+                value={this.state.scale}
+                onChange={(e) => this.handleChangeScale(e)}
+              />
+            </Box>
           </div>
-          <div className={styles.button04}>
-            <a
-              onClick={() =>
-                this.props.addImages(
-                  this.props.image,
-                  this.props.weather,
-                  this.props.scene,
-                  this.props.timeofday,
-                  this.state.boxImageURL,
-                  this.state.box,
-                  "http://localhost:4000/box/" +
-                    this.props.image.replace(".jpg", "") +
-                    "/" +
-                    this.props.model +
-                    "/" +
-                    this.state.box +
-                    "/" +
-                    this.props.image.replace(".jpg", "") +
-                    "_" +
-                    this.props.model +
-                    "_attr_" +
-                    this.state.box +
-                    "_" +
-                    this.state.method +
-                    "_" +
-                    this.state.class +
-                    ".png",
-                  this.state.detect,
-                  this.state.method,
-                  this.state.class
-                )
-              }
-            >
-              比較ビューに追加
-            </a>
-          </div>
-          <div className={styles.button03}>
-            <a
-              onClick={() =>
-                this.props.addImages(
-                  this.props.image,
-                  this.props.weather,
-                  this.props.scene,
-                  this.props.timeofday,
-                  this.state.boxImageURL,
-                  this.state.box,
-                  "http://localhost:4000/box/" +
-                    this.props.image.replace(".jpg", "") +
-                    "/" +
-                    this.props.model +
-                    "/" +
-                    this.state.box +
-                    "/" +
-                    this.props.image.replace(".jpg", "") +
-                    "_" +
-                    this.props.model +
-                    "_attr_" +
-                    this.state.box +
-                    "_" +
-                    this.state.method +
-                    "_bg.png",
-                  this.state.detect,
-                  this.state.method,
-                  this.state.class
-                )
-              }
-            >
-              比較ビューに追加
-            </a>
-          </div>
+        </div>
+        <div className={styles.button04}>
+          <a onClick={() => this.addImages()}>比較ビューに追加</a>
         </div>
       </div>
     );

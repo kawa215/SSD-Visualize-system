@@ -14,6 +14,12 @@ class ImageDataService {
     });
   }
 
+  getClassList(model, imageName, box, method) {
+    return boxApi.get("/boxVisualization/classList", {
+      params: { model: model, imageName: imageName, box: box, method: method },
+    });
+  }
+
   getALLdetectImageList(model, sortOfDetect) {
     console.log(sortOfDetect);
     return boxApi.get("/detect/sortofdetect", {

@@ -410,8 +410,9 @@ class SelectionData extends Component {
             <option selected value="nonemodel">
               Model
             </option>
-            <option value="m0001">model1</option>
-            <option value="m0002">model2</option>
+            <option value="m0001">model0001</option>
+            <option value="m0002">model0002</option>
+            <option value="m0003">model0003</option>
           </select>
         </div>
         メタタグ絞り込み:

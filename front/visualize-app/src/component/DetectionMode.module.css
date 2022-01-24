@@ -1,19 +1,28 @@
 .DataView {
   display: flex;
   width: 1430px;
-  margin-left: 15px;
-  height: 600px;
+  /* margin-left: 15px; */
+  height: 565px;
   background-color: white;
-  margin-top: 10px;
-  position: absolute;
+  /* background-color: red; */
+  /* margin-top: 10px; */
+  /* position: abso
+  lute;
   left: 460px;
-  top: 45px;
+  top: 45px; */
   box-shadow: 0 0 5px 1px #c0c0c0; /* 影 */
-  border-radius: 8px; /* 角の丸み */
+  border-radius: 0px 8px 8px 8px; /* 角の丸み */
   padding: 10px;
-  border-radius: 8px; /* 角の丸み */
+  /* border-radius: 8px; */
   font-weight: bold;
   font-size: 16px;
+}
+
+.modelDetectALLImg {
+  width: 500px;
+  height: 350px;
+  text-align: center;
+  
 }
 
 .img {
@@ -222,3 +231,4 @@ label.datec {
   /* margin-top: 10px;
   margin-bottom: 15px; */
 }
+

@@ -210,21 +210,10 @@ class DetectionMode extends Component {
             <span className={styles.weather}>{this.props.scene}</span>
             <span className={styles.weather}>{this.props.timeofday}</span>
           </div>
-          <img
-            // src={"http://localhost:4000/vals/" + this.props.image}
-            // src={"http://localhost:4000/vals/" + this.props.image}
-            // src={this.returnURLimg(this.props.image)}
-            src={
-              // this.returnBoxImg(this.state.box)
-              this.state.boxImageURL
-              // this.state.selectBoxName +
-              // this.props.image.replace(".jpg", "") +
-              // "/" +
-              // this.props.image.replace(".jpg", "") +
-              // "_detect_all.png"
-            }
-            className={styles.img}
-          ></img>
+          <div className={styles.modelDetectALLImg}>
+            <h3>{this.props.model}</h3>
+            <img src={this.state.boxImageURL} className={styles.img}></img>
+          </div>
           <label>
             <input
               type="radio"

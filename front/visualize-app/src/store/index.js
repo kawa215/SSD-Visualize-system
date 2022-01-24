@@ -31,13 +31,6 @@ export const changeImage = (name, weather, scene, timeofday) => ({
   timeofday: timeofday,
 });
 
-// export const addTargetImage = (image, weather, scene, timeofday) => ({
-//   type: "ADD_TARGET_IMAGES",
-//   image: image,
-//   weather: weather,
-//   scene: scene,
-//   timeofday: timeofday,
-// });
 
 export const addImages = (
   image,
