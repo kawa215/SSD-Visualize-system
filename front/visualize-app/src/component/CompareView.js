@@ -197,7 +197,7 @@ class CompareView extends Component {
   }
 
   inFactorisActive(factor_image) {
-    console.log("factorの方です")
+    console.log("factorの方です");
     var factor_condition = [
       factor_image.detect,
       factor_image.method,
@@ -397,8 +397,10 @@ class CompareView extends Component {
                     <div className={styles.inlineImg}>
                       <ImageSelected
                         // onClick={() => this.props.changeCount()}
+                        model={target_image.model}
                         imageName={target_image.name}
-                        URL={target_image.boxImageURL}
+                        grURL={target_image.grImageURL}
+                        allURL={target_image.detectAllURL}
                         indexTarget={indexTarget}
                         indexFactor={-1}
                         flag="false"
@@ -414,33 +416,46 @@ class CompareView extends Component {
                         {target_image.timeofday}
                       </span>
                     </div>
+                    {this.props.factor_images[indexTarget] !== null && (
+                      <div className={styles.factorImgs}>
 
-                    {this.props.factor_images[indexTarget].map(
-                      (factor_image, indexFactor) => {
-                        return (
-                          <span>
-                            {/* {this.factorImageisActive(factor_image) && ( */}
-                            {this.inFactorisActive(factor_image) && (
-                              <div className={styles.factorImg}>
-                                <ImageSelected
-                                  // onClick={() => this.props.changeCount()}
-                                  imageName={factor_image.name}
-                                  flag="true"
-                                  URL={factor_image.visualizedImageURL}
-                                  indexTarget={indexTarget}
-                                  indexFactor={indexFactor}
-                                ></ImageSelected>
-                                <span className={styles.weather}>
-                                  box{factor_image.box}-{factor_image.detect}-{factor_image.method}- {factor_image.clas}
-                                </span>
-                              </div>
-                            )}
-                          </span>
-                        );
-                      }
-                    )}
+                        {this.props.factor_images[indexTarget].map(
+                          (factor_image, indexFactor) => {
+                            return (
+                              <span>
+                                {this.inFactorisActive(factor_image) && (
+                                  <div className={styles.factorImg}>
+                                    <ImageSelected
+                                      imageName={factor_image.name}
+                                      flag="true"
+                                      URL={factor_image.visualizedImageURL}
+                                      indexTarget={indexTarget}
+                                      indexFactor={indexFactor}
+                                      viURL={factor_image.visualizedImageURL}
+                                      boxURL={factor_image.boxImageURL}
+                                      opacity={factor_image.opacity}
+                                      scale={factor_image.scale}
+                                      style={factor_image.style}
+                                      box={factor_image.box}
+                                      detect={factor_image.detect}
+                                      clas={factor_image.clas}
+                                      score={factor_image.score}
+                                    ></ImageSelected>
+                                    <span className={styles.weather}>
+                                      {factor_image.method}　{factor_image.clas}
+                                    </span>
+                                  </div>
+                                )}
+                              </span>
+                            );
+                          }
+                        )}
+                      </div>
+                    )} 
+                    {/* //   )}
+                      // </span> */}
+                    {/* )} */}
                   </span>
-                  {/* )} */}
                 </div>
               )}
             </div>
@@ -459,3 +474,38 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(CompareView);
+
+// {this.props.factor_images[indexTarget].map(
+//   (factor_image, indexFactor) => {
+//     return (
+//       <span>
+//         {/* {this.factorImageisActive(factor_image) && ( */}
+//         {this.inFactorisActive(factor_image) && (
+//           <div className={styles.factorImg}>
+//             <ImageSelected
+//               // onClick={() => this.props.changeCount()}
+//               imageName={factor_image.name}
+//               flag="true"
+//               URL={factor_image.visualizedImageURL}
+//               indexTarget={indexTarget}
+//               indexFactor={indexFactor}
+//               viURL={factor_image.visualizedImageURL}
+//               boxURL={factor_image.boxImageURL}
+//               opacity={factor_image.opacity}
+//               scale={factor_image.scale}
+//               style={factor_image.style}
+//               box={factor_image.box}
+//               detect={factor_image.detect}
+//               clas={factor_image.clas}
+//               score={factor_image.score}
+//             ></ImageSelected>
+//             <span className={styles.weather}>
+//               box{factor_image.box}-{factor_image.detect}-
+//               {factor_image.method}- {factor_image.clas}
+//             </span>
+//           </div>
+//         )}
+//       </span>
+//     );
+//   }
+// )}

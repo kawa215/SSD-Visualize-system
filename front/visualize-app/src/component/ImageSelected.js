@@ -5,6 +5,8 @@ import styles from "./ImageSelected.module.css";
 import ImageDataService from "../services/Image.service";
 import { connect } from "react-redux";
 import { deleteFactorImage } from "../store/index";
+import Slider from "react-slick";
+
 class ImageSelected extends Component {
   constructor(props) {
     super(props);
@@ -13,6 +15,11 @@ class ImageSelected extends Component {
       weathers: [],
       scenes: [],
       timeofdays: [],
+      style: {
+        backgroundPosition: "0% 0%",
+        transformOrigin: "50% 50%",
+        transform: "scale(1)",
+      },
     };
     this.retrieveConditions = this.retrieveConditions.bind(this);
     this.handleClickBatsu = this.handleClickBatsu.bind(this);
@@ -50,28 +57,136 @@ class ImageSelected extends Component {
   }
 
   render() {
+    const settings = {
+      dots: false,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: true,
+    };
     return (
       <div className={styles.ImageView}>
-        <div className={styles.titleBold}>
-          {this.props.flag !== "true" && 
-          <span> {this.props.imageName}</span>}
-        </div>
-        <img
-          src={this.props.URL}
-          // className={styles.img}
-          className={styles.img}
-          // onClick={this.retrieveConditions(this.props.imageName)}
-        ></img>
-        <span
-          // onClick={this.props.deleteFactorImage(
-          //   this.props.indexTarget,
-          //   this.props.indexFactor
-          // )}
-          onClick={this.handleClickBatsu}
-          className={styles.batsu}
-        >
-          ×
-        </span>
+        {this.props.flag !== "true" ? (
+          <div>
+            <Slider {...settings} className={styles.slider} color="black">
+              <div className={styles.imgDiv}>
+                <div className={styles.titleBold}>
+                  {this.props.flag !== "true" && (
+                    <span>
+                      - {this.props.model} - <br />
+                      検出: {this.props.imageName.replace(".jpg", "")}
+                    </span>
+                  )}
+                </div>
+                <img
+                  src={this.props.allURL}
+                  // className={styles.img}
+                  className={styles.img}
+                  // onClick={this.retrieveConditions(this.props.imageName)}
+                ></img>
+              </div>
+              <div>
+                <div className={styles.titleBold}>
+                  {this.props.flag !== "true" && (
+                    <span>
+                      - {this.props.model} - <br />
+                      GT: {this.props.imageName.replace(".jpg", "")}
+                    </span>
+                  )}
+                </div>
+                <img
+                  src={this.props.grURL}
+                  // className={styles.img}
+                  // className={`${styles.visualize} ${styles.img}`}
+                  className={styles.img}
+                  // onClick={this.retrieveConditions(this.props.imageName)}
+                ></img>
+              </div>
+            </Slider>
+
+            {/* <img
+              src={this.props.allURL}
+              // className={styles.img}
+              className={styles.img}
+              // onClick={this.retrieveConditions(this.props.imageName)}
+            ></img> */}
+
+            <span
+              // onClick={this.props.deleteFactorImage(
+              //   this.props.indexTarget,
+              //   this.props.indexFactor
+              // )}
+              onClick={this.handleClickBatsu}
+              className={styles.batsu}
+            >
+              ×
+            </span>
+          </div>
+        ) : (
+          <div>
+            <div className={styles.titleBold}>
+              <span>
+                {this.props.detect === "correct" ? "正検出 " : "誤検出　"}box:{" "}
+                {this.props.box} <br />
+                {this.props.clas} {this.props.score}
+              </span>
+            </div>
+            <Slider {...settings} className={styles.slider} color="black">
+              <div className={styles.toumei}>
+                <div
+                  className={styles.zoomImgSection}
+                  style={{
+                    height: "120px",
+                    background: `url(${this.props.boxURL}) ${this.props.style.backgroundPosition}`,
+                    transformOrigin: this.props.style.transformOrigin,
+                    transform: this.props.style.transform,
+                  }}
+                >
+                  <img
+                    src={this.props.boxURL}
+                    className={styles.toumei2}
+                    // alt="可視化手法とクラス"
+                  ></img>
+                  <img
+                    src={this.props.viURL}
+                    className={styles.toumei3}
+                    style={{
+                      opacity: `${this.props.opacity}`,
+                    }}
+                  ></img>
+                </div>
+              </div>
+              <div>
+                <img
+                  src={this.props.boxURL}
+                  // className={styles.img}
+                  // className={`${styles.visualize} ${styles.img}`}
+                  className={styles.img}
+                  // onClick={this.retrieveConditions(this.props.imageName)}
+                ></img>
+              </div>
+            </Slider>
+
+            {/* <img
+            src={this.props.allURL}
+            // className={styles.img}
+            className={styles.img}
+            // onClick={this.retrieveConditions(this.props.imageName)}
+          ></img> */}
+
+            <span
+              // onClick={this.props.deleteFactorImage(
+              //   this.props.indexTarget,
+              //   this.props.indexFactor
+              // )}
+              onClick={this.handleClickBatsu}
+              className={styles.batsu}
+            >
+              ×
+            </span>
+          </div>
+        )}
         {/* <span className={styles.round_btn}></span> */}
         {/* <button onClick={this.retrieveConditions(this.props.imageName)}>
           テスト

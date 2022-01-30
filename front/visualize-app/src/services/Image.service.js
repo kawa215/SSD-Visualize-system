@@ -6,6 +6,12 @@ class ImageDataService {
     return databaseApi.get("/vals");
   }
 
+  getPerformanceScore(imageName,model) {
+    return boxApi.get("/getPerformanceScore", {
+      params: { imageName: imageName, model: model },
+    });
+  }
+
   // getBoxImage() {}
 
   getBoxList(imageName, model) {

@@ -31,7 +31,6 @@ export const changeImage = (name, weather, scene, timeofday) => ({
   timeofday: timeofday,
 });
 
-
 export const addImages = (
   image,
   weather,
@@ -42,7 +41,12 @@ export const addImages = (
   visualizedImageURL,
   detect,
   method,
-  clas
+  clas,
+  pose,
+  opacity,
+  scale,
+  style,
+  score
 ) => ({
   type: "ADD_IMAGES",
   image: image,
@@ -55,6 +59,11 @@ export const addImages = (
   detect: detect,
   method: method,
   clas: clas,
+  pose,
+  opacity,
+  scale,
+  style,
+  score,
 });
 
 export const deleteFactorImage = (targetIndex, factorIndex) => ({
@@ -83,12 +92,29 @@ const reducer = (state = initialState, action) => {
       console.log(action);
       cloneTargets = [...state.target_images];
       const targetImage = {
+        model: state.model,
         name: action.image,
         boxImageURL: action.boxImageURL,
+        detectAllURL:
+          "http://localhost:4000/box/" +
+          state.image.replace(".jpg", "") +
+          "/" +
+          state.model +
+          "/" +
+          state.image.replace(".jpg", "") +
+          "_" +
+          state.model +
+          "_detect_all.png",
         box: action.box,
         weather: action.weather,
         scene: action.scene,
         timeofday: action.timeofday,
+        grImageURL:
+          "http://localhost:4000/box/" +
+          state.image.replace(".jpg", "") +
+          "/" +
+          state.image.replace(".jpg", "") +
+          "_gt.png",
       };
       var visualizedImage = {
         name: action.image,
@@ -101,11 +127,16 @@ const reducer = (state = initialState, action) => {
         detect: action.detect,
         method: action.method,
         clas: action.clas,
+        pose: action.pose,
+        opacity: action.opacity,
+        scale: action.scale,
+        style: action.style,
+        score: action.score,
       };
       console.log(visualizedImage);
       //中身コピー
       var index = state.target_images.findIndex(
-        ({ name }) => name === action.image
+        ({ name, model }) => name === action.image && model === state.model
       );
       // var index = state.target_images.indexOf(action.image);
       cloneFactorImages = JSON.parse(JSON.stringify(state.factor_images));
@@ -117,6 +148,7 @@ const reducer = (state = initialState, action) => {
       if (index < 0) {
         //可視化画像ストックあり
         //多次元コピー
+        console.log("重複なし");
         visualizedImage = [
           {
             name: action.image,
@@ -129,30 +161,104 @@ const reducer = (state = initialState, action) => {
             detect: action.detect,
             method: action.method,
             clas: action.clas,
+            pose: action.pose,
+            opacity: action.opacity,
+            scale: action.scale,
+            style: action.style,
+            score: action.score,
           },
         ];
-        cloneFactorImages.push(visualizedImage);
+        console.log(state.factor_images)
+        cloneFactorImages[state.target_images.length]=visualizedImage;
+        // cloneFactorImages.push(visualizedImage);
         newImages = JSON.parse(JSON.stringify(cloneFactorImages));
-        return {
-          ...state,
-          target_images: [...state.target_images, targetImage],
-          factor_images: newImages,
-        };
+        console.log(cloneFactorImages)
+        if (action.detect === "all") {
+          console.log(state.factor_images)
+          cloneFactorImages[state.target_images.length]=null;
+          // cloneFactorImages.push(visualizedImage);
+          newImages = JSON.parse(JSON.stringify(cloneFactorImages));
+          return {
+            ...state,
+            target_images: [...state.target_images, targetImage],
+            factor_images: newImages,
+          };
+        } else {
+          return {
+            ...state,
+            target_images: [...state.target_images, targetImage],
+            factor_images: newImages,
+          };
+        }
       } else {
         //対象画像重複あり
         console.log("重複あり");
+        // if (state.target_images[index].model === state.model) {
+        // } else {
+        // }
 
-        if (cloneFactorImages[index].length > 3) {
+        if (action.detect === "all") {
           return {
             ...state,
           };
+        } else {
+          // if(state.target_images[index].detect === "all" &&)
+          if (!cloneFactorImages[index]) {
+            visualizedImage = [
+              {
+                name: action.image,
+                weather: action.weather,
+                scene: action.scene,
+                timeofday: action.timeofday,
+                boxImageURL: action.boxImageURL,
+                box: action.box,
+                visualizedImageURL: action.visualizedImageURL,
+                detect: action.detect,
+                method: action.method,
+                clas: action.clas,
+                pose: action.pose,
+                opacity: action.opacity,
+                scale: action.scale,
+                style: action.style,
+                score: action.score,
+              },
+            ];
+            // cloneFactorImages.push(visualizedImage);
+            cloneFactorImages[index]=visualizedImage;
+            console.log(cloneFactorImages)
+
+            newImages = JSON.parse(JSON.stringify(cloneFactorImages));
+            // if (action.detect === "all") {
+            //   return {
+            //     ...state,
+            //     target_images: [...state.target_images, targetImage],
+            //   };
+            // } else {
+            return {
+              ...state,
+              // target_images: [...state.target_images, targetImage],
+              factor_images: newImages,
+            };
+            // }
+          }
+
+          //ここは配列ある前提
+          if (cloneFactorImages[index].length > 3) {
+            return {
+              ...state,
+            };
+          }
+          cloneFactorImages[index].push(visualizedImage);
+          newImages = JSON.parse(JSON.stringify(cloneFactorImages));
+          return {
+            ...state,
+            factor_images: newImages,
+          };
         }
-        cloneFactorImages[index].push(visualizedImage);
-        newImages = JSON.parse(JSON.stringify(cloneFactorImages));
-        return {
-          ...state,
-          factor_images: newImages,
-        };
+        // return {
+        //   ...state,
+        //   factor_images: newImages,
+        // };
       }
     case "DELETE_FACTOR_IMAGE":
       cloneTargets = [...state.target_images];
@@ -179,8 +285,8 @@ const reducer = (state = initialState, action) => {
         model: action.model,
       };
     case "CHANGE_IMAGE":
-      console.log("CHANGE_IMAGE")
-      console.log(action)
+      console.log("CHANGE_IMAGE");
+      console.log(action);
       return {
         ...state,
         image: action.name,

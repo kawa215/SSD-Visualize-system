@@ -19,8 +19,8 @@ function App() {
       <SelectionData></SelectionData>
       <Tabs forceRenderTabPanel={true} className={styles.Tabs}>
         <TabList className={[styles.margin, styles.border].join(" ")}>
-          <Tab>DetectionResultMode</Tab>
-          <Tab>FactorMapMode</Tab>
+          <Tab><h4>DetectionResultMode</h4></Tab>
+          <Tab><h4>FactorMapMode</h4></Tab>
         </TabList>
         <TabPanel>
           <DetectionMode></DetectionMode>

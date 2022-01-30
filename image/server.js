@@ -143,6 +143,46 @@ app.get("/boxVisualization/classList", function (req, res) {
   // console.log(arrayOfClass);
 });
 
+// 選択された可視化手法に対してクラスの一覧を取得する
+app.get("/getPerformanceScore", function (req, res) {
+
+  const model = req.query.model;
+  const imageName = req.query.imageName;
+  // const box = req.query.box;
+
+  // const sortOfDetect = req.query.sortOfDetect;
+
+  let ret = imageName.replace(".jpg", "");
+
+  const dirPath = "heatmaps.q1000.20220103/" + ret + "/" + model;
+
+  var arrayOfScore = [];
+  var sortOfDetect;
+  // console.log(method)
+  for (var i = 0; i < 3; i++) {
+    switch (i) {
+      case 0:
+        sortOfDetect = "correct";
+        break;
+      case 1: // foo is 0 so criteria met here so this block will run
+        sortOfDetect = "misdetect";
+        break;
+      // NOTE: the forgotten break would have been here
+      case 2: // no break statement in 'case 0:' so this case will run as well
+        sortOfDetect = "misclass";
+        break; // it encounters this break so will not continue into 'case 2:'
+      default:
+        console.log("default");
+    }
+    console.log(sortOfDetect);
+    arrayOfScore[i] = searchFiles(dirPath, sortOfDetect, 0).flat().filter(Boolean).length;
+  }
+
+  // if (method) {
+
+  res.send(arrayOfScore);
+});
+
 app.get("/detect/sortofdetect", function (req, res) {
   console.log("--/detect/detectBoxes/:sortOfDetect--");
   const sortOfDetect = req.query.sortOfDetect;

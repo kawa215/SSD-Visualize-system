@@ -12,6 +12,7 @@ class FactorMapMode extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      radio: [true, false, false, false],
       detect: "all",
       box: "",
       method: "",
@@ -60,8 +61,12 @@ class FactorMapMode extends Component {
       console.log(this.props.image);
       console.log(prevProps.image);
       this.setState({
+        radio: [true, false, false, false],
         box: "all",
+        detect: "all",
         classes: [],
+        boxList: ["all"],
+        // storeBoxList: ["all"],
         pose: false,
         style: {
           backgroundPosition: "0% 0%",
@@ -69,6 +74,7 @@ class FactorMapMode extends Component {
           transform: "scale(1)",
         },
       });
+
       this.returnURLimg(this.props.image);
       console.log(this.state.box);
       this.returnBoxImg("all");
@@ -110,8 +116,36 @@ class FactorMapMode extends Component {
     console.log("--handleChangeRadio---------");
     this.setState({ detect: e.target.value });
     if (e.target.value === "all") {
-      this.returnURLimg(this.props.image);
+      this.setState({
+        radio: [true, false, false, false],
+        box: "all",
+        detect: "all",
+        classes: [],
+        boxList: ["all"],
+        pose: false,
+        style: {
+          backgroundPosition: "0% 0%",
+          transformOrigin: "50% 50%",
+          transform: "scale(1)",
+        },
+      });
+      // this.returnURLimg(this.props.image);
+
+      this.returnBoxImg(e.target.value);
     } else {
+      if (e.target.value === "correct") {
+        this.setState({
+          radio: [false, true, false, false],
+        });
+      } else if (e.target.value === "misdetect") {
+        this.setState({
+          radio: [false, false, true, false],
+        });
+      } else {
+        this.setState({
+          radio: [false, false, false, true],
+        });
+      }
       this.returnFileNNamesDetectBox(this.state.storeBoxList, this.props.image);
     }
     console.log("----無事終わり-------");
@@ -328,6 +362,8 @@ class FactorMapMode extends Component {
   addImages() {
     var visualizedImageURL;
     const imageWithoutJpg = this.props.image.replace(".jpg", "");
+    var score = 0;
+
     if (this.state.box === "all") {
       // console.log("addimages: all")
       // console.log())
@@ -343,6 +379,10 @@ class FactorMapMode extends Component {
         "_detect_all.png";
     } else {
       console.log("addimages: box");
+      var scoreIndex = this.state.detectBoxList.findIndex(
+        ({ box }) => box === this.state.box
+      );
+      score = this.state.detectBoxList[scoreIndex].score;
       visualizedImageURL =
         "http://localhost:4000/box/" +
         imageWithoutJpg +
@@ -373,7 +413,12 @@ class FactorMapMode extends Component {
       visualizedImageURL,
       this.state.detect,
       this.state.method,
-      this.state.class
+      this.state.class,
+      this.state.pose,
+      this.state.opacity,
+      this.state.scale,
+      this.state.style,
+      score,
     );
   }
 
@@ -405,6 +450,7 @@ class FactorMapMode extends Component {
               name="detect"
               value="all"
               onChange={(e) => this.handleChangeRadio(e)}
+              checked={this.state.radio[0]}
               // onChange={this.handleChangeRadio}
             />
             すべて
@@ -416,6 +462,7 @@ class FactorMapMode extends Component {
               value="correct"
               // onChange={this.handleChangeRadio}
               onChange={(e) => this.handleChangeRadio(e)}
+              checked={this.state.radio[1]}
             />
             正検出
           </label>
@@ -425,6 +472,7 @@ class FactorMapMode extends Component {
               name="detect"
               value="misdetect"
               onChange={(e) => this.handleChangeRadio(e)}
+              checked={this.state.radio[2]}
               // onChange={this.handleChangeRadio}
             />
             誤検出
@@ -435,6 +483,7 @@ class FactorMapMode extends Component {
               type="radio"
               name="detect"
               value="misclass"
+              checked={this.state.radio[3]}
               onChange={(e) => this.handleChangeRadio(e)}
               // onChange={this.handleChangeRadio}
             />
@@ -453,14 +502,15 @@ class FactorMapMode extends Component {
                     all
                   </option>
                 );
-              } else if (index === 0) {
+              } else if (index === 0 && this.state.detect !== "all") {
                 return (
                   <option selected value={boxnum}>
                     {boxnum}
                   </option>
                 );
               }
-              return <option value={boxnum}>{boxnum}</option>;
+              if (this.state.detect !== "all")
+                return <option value={boxnum}>{boxnum}</option>;
             })}
           </select>
           <br />
@@ -606,6 +656,12 @@ class FactorMapMode extends Component {
             </Box>
           </div>
         </div>
+        {/* {this.state.box !== "all" && (
+          <div className={styles.button04}>
+            <a onClick={() => this.addImages()}>比較ビューに追加</a>
+          </div>
+        )} */}
+
         <div className={styles.button04}>
           <a onClick={() => this.addImages()}>比較ビューに追加</a>
         </div>
@@ -636,7 +692,12 @@ const mapDispatchToProps = (dispatch) => ({
     visualizedImageURL,
     detect,
     method,
-    clas
+    clas,
+    pose,
+    opacity,
+    scale,
+    style,
+    score
   ) =>
     dispatch(
       addImages(
@@ -649,7 +710,12 @@ const mapDispatchToProps = (dispatch) => ({
         visualizedImageURL,
         detect,
         method,
-        clas
+        clas,
+        pose,
+        opacity,
+        scale,
+        style,
+        score
       )
     ),
 });

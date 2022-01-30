@@ -25,12 +25,8 @@ class ImageView extends Component {
       imageUrl:
         "http://localhost:4000/box/" +
         this.props.imageName.replace(".jpg", "") +
-        // "/" +
-        // this.props.model +
         "/" +
         this.props.imageName.replace(".jpg", "") +
-        // "_" +
-        // this.props.model +
         "_gt.png",
     });
   }

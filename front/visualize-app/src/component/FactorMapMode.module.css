@@ -22,6 +22,7 @@
   width: 500px;
   height: 300px;
   border-radius: 3px;
+  border: 2px solid #DADCDF;
   display: block;
   margin-top: 30px;
   /* margin-bottom: 15px; */
@@ -227,6 +228,7 @@ label.datec {
   /* width: 100%;
   height: 100%; */
   border-radius: 3px;
+  border: 2px solid #DADCDF;
   /* display: inline; */
   /* margin-top: 10px;
   margin-bottom: 15px; */
@@ -237,6 +239,7 @@ label.datec {
   overflow: hidden;
   width: 500px;
   height: 300px;
+  border: 2px solid #DADCDF;
   margin: 0 auto;
   cursor: zoom-in
 }
@@ -284,6 +287,10 @@ label.datec {
   /* background-color: red; */
   color: black !important;
 }
+
+/* .vis {
+  margin-top: ;
+} */
 
 .slick-prev:before,
 .slick-next:before {
