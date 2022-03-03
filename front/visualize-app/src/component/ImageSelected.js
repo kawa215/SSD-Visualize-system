@@ -127,7 +127,12 @@ class ImageSelected extends Component {
           <div>
             <div className={styles.titleBold}>
               <span>
-                {this.props.detect === "correct" ? "正検出 " : "誤検出　"}box:{" "}
+              {this.props.detect === "正検出" && "正検出 "}
+              {this.props.detect === "誤検出" && "誤検出 "}
+              {this.props.detect === "misclass" && "誤分類 "}
+              {/* {this.props.detect === "正検出" ? "正検出 " : "誤検出　"}
+                {this.props.detect === "正検出" ? "正検出 " : "誤検出　"} */}
+                box:{" "}
                 {this.props.box} <br />
                 {this.props.clas} {this.props.score}
               </span>
