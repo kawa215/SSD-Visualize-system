@@ -1,10 +1,6 @@
-// import { model } from "mongoose";
 import { createStore } from "redux";
 
-// export const deleteName = () => ({
-//   type: "DELETE_NAME",
-//   name: "",
-// });
+// stateの管理
 const initialState = {
   count: 2,
   radio: "",
@@ -17,12 +13,13 @@ const initialState = {
   factor_images: [],
 };
 
-// 引数nameをとり、{type: "ADD_NAME", name: name}を返すjsの関数。
+// モデル変更
 export const changeModel = (model) => ({
   type: "CHNGE_MODEL",
   model: model,
 });
 
+//　対象画像変更
 export const changeImage = (name, weather, scene, timeofday) => ({
   type: "CHANGE_IMAGE",
   name: name,
@@ -31,6 +28,7 @@ export const changeImage = (name, weather, scene, timeofday) => ({
   timeofday: timeofday,
 });
 
+// 比較ビューに追加
 export const addImages = (
   image,
   weather,
@@ -66,12 +64,14 @@ export const addImages = (
   score,
 });
 
+//　要因マップ画像削除
 export const deleteFactorImage = (targetIndex, factorIndex) => ({
   type: "DELETE_FACTOR_IMAGE",
   targetIndex: targetIndex,
   factorIndex: factorIndex,
 });
 
+// attributes 条件変更
 export const changeConditions = (attributes) => ({
   type: "CHANGE_CONDITION",
   weather: attributes.weather,
@@ -79,17 +79,13 @@ export const changeConditions = (attributes) => ({
   timeofday: attributes.timeofday,
 });
 
+// reducer定義
 const reducer = (state = initialState, action) => {
-  console.log(action.type);
   var cloneTargets;
   var cloneFactorImages;
 
   switch (action.type) {
     case "ADD_IMAGES":
-      //重複チェック
-      // Array.from(new Set(array1));
-      console.log("ADD_IMAGES");
-      console.log(action);
       cloneTargets = [...state.target_images];
       const targetImage = {
         model: state.model,
@@ -133,22 +129,13 @@ const reducer = (state = initialState, action) => {
         style: action.style,
         score: action.score,
       };
-      console.log(visualizedImage);
-      //中身コピー
       var index = state.target_images.findIndex(
         ({ name, model }) => name === action.image && model === state.model
       );
-      // var index = state.target_images.indexOf(action.image);
       cloneFactorImages = JSON.parse(JSON.stringify(state.factor_images));
-      console.log(state.factor_images);
-      console.log(cloneFactorImages);
       var newImages;
-      //対象画像重複なしindex見つからない
-      console.log(index);
       if (index < 0) {
-        //可視化画像ストックあり
-        //多次元コピー
-        console.log("重複なし");
+        //対象画像重複なし
         visualizedImage = [
           {
             name: action.image,
@@ -168,15 +155,10 @@ const reducer = (state = initialState, action) => {
             score: action.score,
           },
         ];
-        console.log(state.factor_images)
         cloneFactorImages[state.target_images.length]=visualizedImage;
-        // cloneFactorImages.push(visualizedImage);
         newImages = JSON.parse(JSON.stringify(cloneFactorImages));
-        console.log(cloneFactorImages)
         if (action.detect === "all") {
-          console.log(state.factor_images)
           cloneFactorImages[state.target_images.length]=null;
-          // cloneFactorImages.push(visualizedImage);
           newImages = JSON.parse(JSON.stringify(cloneFactorImages));
           return {
             ...state,
@@ -192,17 +174,11 @@ const reducer = (state = initialState, action) => {
         }
       } else {
         //対象画像重複あり
-        console.log("重複あり");
-        // if (state.target_images[index].model === state.model) {
-        // } else {
-        // }
-
         if (action.detect === "all") {
           return {
             ...state,
           };
         } else {
-          // if(state.target_images[index].detect === "all" &&)
           if (!cloneFactorImages[index]) {
             visualizedImage = [
               {
@@ -223,26 +199,13 @@ const reducer = (state = initialState, action) => {
                 score: action.score,
               },
             ];
-            // cloneFactorImages.push(visualizedImage);
             cloneFactorImages[index]=visualizedImage;
-            console.log(cloneFactorImages)
-
             newImages = JSON.parse(JSON.stringify(cloneFactorImages));
-            // if (action.detect === "all") {
-            //   return {
-            //     ...state,
-            //     target_images: [...state.target_images, targetImage],
-            //   };
-            // } else {
             return {
               ...state,
-              // target_images: [...state.target_images, targetImage],
               factor_images: newImages,
             };
-            // }
           }
-
-          //ここは配列ある前提
           if (cloneFactorImages[index].length > 3) {
             return {
               ...state,
@@ -255,10 +218,6 @@ const reducer = (state = initialState, action) => {
             factor_images: newImages,
           };
         }
-        // return {
-        //   ...state,
-        //   factor_images: newImages,
-        // };
       }
     case "DELETE_FACTOR_IMAGE":
       cloneTargets = [...state.target_images];
@@ -285,8 +244,6 @@ const reducer = (state = initialState, action) => {
         model: action.model,
       };
     case "CHANGE_IMAGE":
-      console.log("CHANGE_IMAGE");
-      console.log(action);
       return {
         ...state,
         image: action.name,
@@ -295,48 +252,17 @@ const reducer = (state = initialState, action) => {
         timeofday: action.timeofday,
       };
     case "CHANGE_CONDITION":
-      console.log("readuceきた");
-      console.log(action.weather);
       return {
         ...state,
         weather: action.weather,
         scene: action.scene,
         timeofday: action.timeofday,
       };
-    // case "DECREASE_COUNT":
-    //   return {
-    //     count: state.count - 1,
-    //   };
-    // case "ADD_IMAGE":
-    //   return {
-    //     image: state.payload,
-    //   };
-    // case "CHANGE_RADIO":
-    //   return {
-    //     radio: state.radio,
-    //   };
-    // case "CHANGE_WEATHERS":
-    //   return [...action.payload];
-    // case "CHANGE_SCENES":
-    //   return [...action.payload];
-    // case "CHANGE_TIMEOFDAYS":
-    //   return [...action.payload];
-
-    // case "COUNT_UP":
-    //   return {
-    //     clickCount: state.clickCount + 1,
-    //     currentValue: state.currentValue + action.value,
-    //   };
-    // case "COUNT_DOWN":
-    //   return {
-    //     clickCount: state.clickCount + 1,
-    //     currentValue: state.currentValue - action.value,
-    //   };
     default:
       return state;
   }
 };
-//storeにcountを保持
+
 const store = createStore(reducer);
 
 export default store;
