@@ -13,12 +13,10 @@ var corsOptions = {
 
 app.use(cors());
 
-// parse requests of content-type - application/json
 app.use(bodyParser.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// データベース接続
 const db = require("./app/models");
 db.mongoose
   .connect(db.url, {
@@ -32,11 +30,6 @@ db.mongoose
     console.log("Cannot connect to the database!", err);
     process.exit();
   });
-
-// simple route
-app.get("/", (req, res) => {
-  res.json({a: "a"});
-});
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
