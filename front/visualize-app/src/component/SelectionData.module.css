@@ -35,7 +35,6 @@
 }
 
 select {
-  /* styling */
   background-color: white;
   border: thin solid blue;
   border-radius: 4px;
@@ -43,8 +42,6 @@ select {
   font: inherit;
   line-height: 1.5em;
   padding: 0.5em 2.5em 0.5em 1em;
-  /* reset */
-
   margin: 0;
   margin-right: 2px;
   -webkit-box-sizing: border-box;
@@ -62,7 +59,7 @@ select.classic {
     calc(100% - 15px) calc(1em + 2px), 100% 0;
   background-size: 5px 5px, 5px 5px, 2.5em 2.5em;
   background-repeat: no-repeat;
-  margin:0px;
+  margin: 0px;
 }
 
 select.classic:focus {
@@ -85,14 +82,12 @@ button {
   appearance: none;
   border: thin solid 1px;
   border-radius: 5px;
-  /* background: #4676d7; */
-  /* margin: 2px 10px 2px; */
   padding: 2px 10px;
   font-size: 16px;
 }
 
 img {
-  border: 2px solid #DADCDF;
+  border: 2px solid #dadcdf;
 }
 
 .weather {
@@ -109,10 +104,6 @@ img {
   background: #f8f0ff;
   margin: 2px 1px 2px;
 }
-
-/* button:hover {
-  background: #1d49aa;
-} */
 
 button:focus {
   outline: none;

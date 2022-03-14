@@ -1,60 +1,24 @@
 .titleBold {
-  /* font-weight: bold;
-  font-size: 17px; */
-  /* margin-bottom: 20px; */
   height: 40px;
-  /* background-color: aqua; */
 }
 
-/* .imgDiv {
-  
-} */
-
-.slider{
+.slider {
   position: relative;
   margin: 0 auto;
-  width : 220px;
-  /* text-align: center; */
+  width: 220px;
 }
 
 .img {
   width: 220px;
   height: 120px;
   border-radius: 3px;
-  border: 2px solid #DADCDF;
+  border: 2px solid #dadcdf;
   margin-bottom: 10px;
   display: initial !important;
 }
 
-/* .slick-prev:before, .slick-next:before {
-  position: relative !important;
-  left: 30px !important;
-}
-
-.slick-prev, .slick-next {
-  font-size: 0;
-  line-height: 0;
-  position: absolute;
-  top: 50%;
-  display: block;
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  transform: translate(0, -50%);
-  cursor: pointer;
-  color: transparent;
-  border: none;
-  outline: none;
-  background: transparent;
-} */
-
 .ImageView {
-  /* height: 155px; */
   position: relative;
-  /* background-color: rosybrown; */
-  /* width: 250px; */
-  /* float: left; */
-  /* margin-right: 5px; */
 }
 
 .round_btn {
@@ -90,10 +54,6 @@
   position: absolute;
   left: 230px;
   top: 33px;
-  /* bottom: 150px; */
-  /* width: 400px;
-  height: 200px; */
-
   font-size: 100%; /*ボタンの大きさ*/
   font-weight: bold;
   background-color: #111;
@@ -116,13 +76,11 @@
 }
 
 .toumei {
-  /* position: relative; */
   overflow: hidden;
   width: 220px;
   height: 120px;
-  border: 2px solid #DADCDF;
+  border: 2px solid #dadcdf;
   margin: 0 auto;
-  /* cursor: zoom-in */
 }
 
 .toumei2 {
@@ -132,9 +90,6 @@
   top: 0;
   left: 0;
   opacity: 1;
-
-  /* width: 100%; */
-  /* display: block; */
   pointer-events: none;
 }
 
@@ -145,12 +100,11 @@
   top: 0;
   left: 0;
   border: none;
-  /* opacity: 0.3; */
 }
 
 .zoomImgSection {
   background-repeat: no-repeat;
-  
+
   width: 220px;
   height: 120px;
 }

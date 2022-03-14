@@ -1,19 +1,11 @@
 .DataView {
   display: flex;
   width: 1430px;
-  /* margin-left: 15px; */
   height: 565px;
   background-color: white;
-  /* background-color: red; */
-  /* margin-top: 10px; */
-  /* position: abso
-  lute;
-  left: 460px;
-  top: 45px; */
   box-shadow: 0 0 5px 1px #c0c0c0; /* 影 */
   border-radius: 0px 8px 8px 8px; /* 角の丸み */
   padding: 10px;
-  /* border-radius: 8px; */
   font-weight: bold;
   font-size: 15px;
 }
@@ -22,14 +14,9 @@
   width: 500px;
   height: 300px;
   border-radius: 3px;
-  border: 2px solid #DADCDF;
+  border: 2px solid #dadcdf;
   display: block;
   margin-top: 30px;
-  /* margin-bottom: 15px; */
-}
-
-.detec {
-  /* margin-right: 20px; */
 }
 
 .compare {
@@ -48,7 +35,6 @@
   margin: 0 auto;
   padding: 0.5em 0.6em;
   width: 200px;
-  /* color: #2285b1; */
   font-size: 18px;
   font-weight: 700;
   border: 2px solid;
@@ -117,9 +103,7 @@
 }
 
 .weather {
-  /* margin: 2em auto; */
   margin-left: 15px;
-
   padding: 0.2em;
   width: 90%;
   color: #666; /* 文字色 */
@@ -128,12 +112,10 @@
 }
 
 .attributes {
-  /* color: red; */
   margin-top: 5px;
 }
 
 select {
-  /* styling */
   background-color: white;
   border: thin solid blue;
   border-radius: 4px;
@@ -141,7 +123,6 @@ select {
   font: inherit;
   line-height: 1.5em;
   padding: 0.4em 2.5em 0.5em 0.3em;
-  /* reset */
   margin: 0;
   margin-right: 10px;
   -webkit-box-sizing: border-box;
@@ -181,7 +162,6 @@ select:-moz-focusring {
 
 label {
   margin-left: 20px;
-  /* margin-right: 20px; */
 }
 
 label.datec {
@@ -190,8 +170,6 @@ label.datec {
 
 .condition {
   width: 540px;
-  /* height: 490px; */
-  /* background-color: #2285b1; */
   height: 540px;
 }
 
@@ -199,61 +177,36 @@ label.datec {
   width: 500px;
   height: 540px;
   margin-top: 38px;
-  /* margin-left: 0px; */
-  /* background-color: aquamarine; */
 }
 
 .visualizeImage {
-  /* width: 320px;
-  height: 500px; */
   text-align: center;
-  /* margin: 0 auto; */
-  /* background-color: aquamarine; */
-}
-
-.canvas {
-  /* background-color: black; */
 }
 
 .visualize {
-  /* position: absolute; */
-  /* margin-top: 38px; */
   width: 500px;
   height: 300px;
-  /* opacity: 0.9; */
-  /* top: 0px;
-  right: 350px; */
-  /* widt5: 380px;
-  height: 500px; */
-  /* width: 100%;
-  height: 100%; */
   border-radius: 3px;
-  border: 2px solid #DADCDF;
-  /* display: inline; */
-  /* margin-top: 10px;
-  margin-bottom: 15px; */
+  border: 2px solid #dadcdf;
 }
 
 .toumei {
-  /* position: relative; */
   overflow: hidden;
   width: 500px;
   height: 300px;
-  border: 2px solid #DADCDF;
+  border: 2px solid #dadcdf;
   margin: 0 auto;
-  cursor: zoom-in
+  cursor: zoom-in;
 }
 
 .zoomImgSection {
   background-repeat: no-repeat;
-  
   width: 500px;
   height: 300px;
 }
 
 .toumei:hover .toumei2 .toumei3 {
   opacity: 0;
-
 }
 
 .toumei2 {
@@ -263,9 +216,6 @@ label.datec {
   top: 0;
   left: 0;
   opacity: 1;
-
-  /* width: 100%; */
-  /* display: block; */
   pointer-events: none;
 }
 
@@ -275,7 +225,6 @@ label.datec {
   height: 300px;
   top: 0;
   left: 0;
-  /* opacity: 0.3; */
 }
 
 .slide {
@@ -284,37 +233,10 @@ label.datec {
 }
 
 .slider {
-  /* background-color: red; */
   color: black !important;
 }
-
-/* .vis {
-  margin-top: ;
-} */
 
 .slick-prev:before,
 .slick-next:before {
   color: yellow;
 }
-/* 
-.canvas::after{
-
-  content: '';
-
-  position: absolute;
-
-  top: 0;
-
-  right: 0;
-
-  bottom: 0;
-
-  left: 0;
-
-  background-color: black;
-
-  opacity: 0.1;
-
-  display:block
-
-} */
