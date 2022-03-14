@@ -52,21 +52,18 @@ class FactorMapMode extends Component {
     this.returnALLorFactorImageURL = this.returnALLorFactorImageURL.bind(this);
   }
 
+  // conponentレンダリングされた時
   componentDidUpdate(prevProps) {
     if (
       this.props.image !== prevProps.image ||
       this.props.model !== prevProps.model
     ) {
-      console.log("-----------");
-      console.log(this.props.image);
-      console.log(prevProps.image);
       this.setState({
         radio: [true, false, false, false],
         box: "all",
         detect: "all",
         classes: [],
         boxList: ["all"],
-        // storeBoxList: ["all"],
         pose: false,
         style: {
           backgroundPosition: "0% 0%",
@@ -76,15 +73,12 @@ class FactorMapMode extends Component {
       });
 
       this.returnURLimg(this.props.image);
-      console.log(this.state.box);
       this.returnBoxImg("all");
-      console.log("----無事終わり-------");
     }
   }
 
+  // 要因マップ画像のURLを取得
   returnALLorFactorImageURL() {
-    console.log("--------------------returnFactororALL");
-    console.log(this.state.box);
     var imageURL;
     if (this.state.box === "all") {
       imageURL = this.state.boxImageURL;
@@ -112,8 +106,8 @@ class FactorMapMode extends Component {
     }
   }
 
+  // radioボタン変更された時
   handleChangeRadio(e) {
-    console.log("--handleChangeRadio---------");
     this.setState({ detect: e.target.value });
     if (e.target.value === "all") {
       this.setState({
@@ -129,7 +123,6 @@ class FactorMapMode extends Component {
           transform: "scale(1)",
         },
       });
-      // this.returnURLimg(this.props.image);
 
       this.returnBoxImg(e.target.value);
     } else {
@@ -148,52 +141,49 @@ class FactorMapMode extends Component {
       }
       this.returnFileNNamesDetectBox(this.state.storeBoxList, this.props.image);
     }
-    console.log("----無事終わり-------");
   }
 
+  // 透明度調整
   handleChangeOpacity(e) {
     this.setState({ opacity: e.target.value });
   }
 
+  // 拡大度調整
   handleChangeScale(e) {
     this.onMouseOver();
     this.setState({ scale: e.target.value });
   }
 
+  // 要因マップの上でマウスを動かす時
   onMouseMove(event) {
-    console.log("--------onMouseMove");
     if (!this.state.pose) {
       const { left, top, width } = event.currentTarget.getBoundingClientRect();
-      console.log(event.currentTarget.getBoundingClientRect());
-      console.log(event.pageX);
-      console.log(event.pageY);
       const height = 350;
       const x = ((event.pageX - left) / width) * 100;
       const y = ((event.pageY - 175) / height) * 100;
 
       this.setState((prevState) => ({
         style: {
-          ...prevState.style, // copy all other key-value pairs of food object
-          // copy all pizza key-value pairs
+          ...prevState.style, 
           transformOrigin: `${x}% ${y}%`,
-          backgroundPosition: `${x}% ${y}%`, // update value of specific key
+          backgroundPosition: `${x}% ${y}%`, 
         },
       }));
     }
   }
 
+  // マウスオーバー
   onMouseOver() {
-    console.log("--------onMouseOver");
     this.setState({ ...this.state });
     this.setState((prevState) => ({
       style: {
-        ...prevState.style, // copy all other key-value pairs of food object
-        // copy all pizza key-value pairs
-        transform: `scale(${this.state.scale})`, // update value of specific key
+        ...prevState.style, 
+        transform: `scale(${this.state.scale})`,
       },
     }));
   }
 
+  // 調整した度数でポーズする
   activatePose() {
     if (!this.state.pose) {
       this.setState({
@@ -206,31 +196,24 @@ class FactorMapMode extends Component {
     }
   }
 
+  // マウスリーブ
   onMouseLeave() {
-    console.log("--------onMouseLeave");
     this.setState((prevState) => ({
       style: {
-        ...prevState.style, // copy all other key-value pairs of food object
-        // copy all pizza key-value pairs
-        transform: `scale(${this.state.scale})`, // update value of specific key
+        ...prevState.style, 
+        transform: `scale(${this.state.scale})`, 
       },
     }));
   }
 
+  // 要因マップのファイル名やボックス クラスなどを取得
   returnFileNNamesDetectBox(boxList, imageName) {
-    console.log(" -------returnFileNNamesDetectBox");
-    // boxListを元に戻す！！
-    console.log(boxList);
-    console.log(imageName);
-    console.log(boxList);
     if (boxList[0] === "all") boxList.shift();
     imageDataService
       .getDetectBoxList(boxList, imageName, this.props.model)
       .then((response) => {
-        console.log(response);
         var copyResponseData = response.data;
         const data = copyResponseData.map((data) => {
-          //変更必要
           const detectName = data[6].replace(".png", "");
           return {
             box: data[3],
@@ -239,8 +222,6 @@ class FactorMapMode extends Component {
             detect: detectName,
           };
         });
-        console.log("--------databoxclasとか");
-        console.log(data);
         this.setState({
           detectBoxList: data,
         });
@@ -252,8 +233,6 @@ class FactorMapMode extends Component {
           }
         });
         boxListdata = boxListdata.filter((v) => v);
-        console.log("-----浄化");
-        console.log(boxListdata);
         this.setState({
           boxList: boxListdata,
           box: boxListdata[0],
@@ -265,12 +244,11 @@ class FactorMapMode extends Component {
       });
   }
 
+  // 画像名とモデルを指定してボックスリストを取得
   returnURLimg(imageName) {
-    console.log(imageName);
     imageDataService
       .getBoxList(this.props.image, this.props.model)
       .then((response) => {
-        console.log(response);
         this.setState({
           boxList: response.data,
           storeBoxList: response.data,
@@ -281,13 +259,10 @@ class FactorMapMode extends Component {
       });
   }
 
+  // ボックス画像のURL取得
   returnBoxImg(box) {
-    // var BoxImg;
     var URL;
-    console.log("returnBoxImg------");
-    console.log(box);
     if (box === "all") {
-      console.log("allのif");
       URL =
         "http://localhost:4000/box/" +
         this.props.image.replace(".jpg", "") +
@@ -301,8 +276,6 @@ class FactorMapMode extends Component {
 
       this.setState({ boxImageURL: URL });
     } else {
-      console.log("all以外！↓");
-      //b1c9c847-3bda4659_detect_7759_car_0.844_correct
       imageDataService
         .getBoxImage(box, this.props.image, this.props.model)
         .then((response) => {
@@ -315,7 +288,6 @@ class FactorMapMode extends Component {
             box +
             "/" +
             response.data;
-          console.log(URL);
           this.setState({ boxImageURL: URL });
         })
         .catch((e) => {
@@ -324,11 +296,13 @@ class FactorMapMode extends Component {
     }
   }
 
+  // ボックスを変更した時
   handleChangeBox(event) {
     this.setState({ box: event.target.value });
     this.returnBoxImg(event.target.value);
   }
 
+  // 可視化手法変更した時
   handleChangeMethod(event) {
     this.setState({ method: event.target.value });
     this.getClassList(
@@ -339,15 +313,16 @@ class FactorMapMode extends Component {
     );
   }
 
+  // クラス変更した時
   handleChangeClass(event) {
     this.setState({ class: event.target.value });
   }
 
+  // クラスのリストを取得
   getClassList(model, imageName, box, method) {
     imageDataService
       .getClassList(model, imageName, box, method)
       .then((response) => {
-        console.log(response);
         if (response.data) {
           this.setState({
             classes: response.data,
@@ -359,14 +334,13 @@ class FactorMapMode extends Component {
       });
   }
 
+  // 比較ビューに追加を押した時
   addImages() {
     var visualizedImageURL;
     const imageWithoutJpg = this.props.image.replace(".jpg", "");
     var score = 0;
 
     if (this.state.box === "all") {
-      // console.log("addimages: all")
-      // console.log())
       visualizedImageURL =
         "http://localhost:4000/box/" +
         imageWithoutJpg +
@@ -378,7 +352,6 @@ class FactorMapMode extends Component {
         this.props.model +
         "_detect_all.png";
     } else {
-      console.log("addimages: box");
       var scoreIndex = this.state.detectBoxList.findIndex(
         ({ box }) => box === this.state.box
       );
@@ -432,7 +405,6 @@ class FactorMapMode extends Component {
       arrows: true,
     };
 
-    // this.retrieveConditions(this.props.image);
     return (
       <div className={styles.DataView}>
         <div className={styles.condition}>
@@ -451,7 +423,6 @@ class FactorMapMode extends Component {
               value="all"
               onChange={(e) => this.handleChangeRadio(e)}
               checked={this.state.radio[0]}
-              // onChange={this.handleChangeRadio}
             />
             すべて
           </label>
@@ -460,7 +431,6 @@ class FactorMapMode extends Component {
               type="radio"
               name="detect"
               value="correct"
-              // onChange={this.handleChangeRadio}
               onChange={(e) => this.handleChangeRadio(e)}
               checked={this.state.radio[1]}
             />
@@ -473,7 +443,6 @@ class FactorMapMode extends Component {
               value="misdetect"
               onChange={(e) => this.handleChangeRadio(e)}
               checked={this.state.radio[2]}
-              // onChange={this.handleChangeRadio}
             />
             誤検出
           </label>
@@ -485,7 +454,6 @@ class FactorMapMode extends Component {
               value="misclass"
               checked={this.state.radio[3]}
               onChange={(e) => this.handleChangeRadio(e)}
-              // onChange={this.handleChangeRadio}
             />
             誤分類
           </label>
@@ -542,7 +510,6 @@ class FactorMapMode extends Component {
           </select>
         </div>
         <div className={styles.visualizeImages}>
-          {/* <h2> </h2> */}
           <Slider {...settings} className={styles.slider} color="black">
             <div>
               <h3>
@@ -573,8 +540,6 @@ class FactorMapMode extends Component {
                       ".png"
                 }
                 className={styles.visualize}
-
-                // alt="可視化手法とクラス"
               ></img>
             </div>
             <div>
@@ -656,12 +621,6 @@ class FactorMapMode extends Component {
             </Box>
           </div>
         </div>
-        {/* {this.state.box !== "all" && (
-          <div className={styles.button04}>
-            <a onClick={() => this.addImages()}>比較ビューに追加</a>
-          </div>
-        )} */}
-
         <div className={styles.button04}>
           <a onClick={() => this.addImages()}>比較ビューに追加</a>
         </div>

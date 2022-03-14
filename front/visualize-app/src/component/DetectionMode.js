@@ -17,6 +17,7 @@ function createData(model, correct, misdetect, misclass) {
   return { model: model, correct, misdetect, misclass };
 }
 
+// モデル情報
 const rows = [
   createData("m0001", 7312, 1410, 213),
   createData("m0002", 3383, 4830, 110),
@@ -38,13 +39,9 @@ class DetectionMode extends Component {
       classes: [],
       boxImageURL: "",
       baseURL: "http://localhost:4000/box/",
-      //元データ
       rows: rows,
-      //表示
       displayRows: [],
       models: ["m0001", "m0002", "m0003"],
-      // props.image
-      // "_detect_all.png",
     };
 
     this.handleChangeBox = this.handleChangeBox.bind(this);
@@ -58,6 +55,7 @@ class DetectionMode extends Component {
     this.getPerformanceScore = this.getPerformanceScore.bind(this);
   }
 
+  // コンポーネント更新された時
   componentDidUpdate(prevProps) {
     if (
       this.props.image !== prevProps.image ||
@@ -65,32 +63,14 @@ class DetectionMode extends Component {
     ) {
       this.getPerformanceScore(this.props.image, this.props.model, 0);
       this.returnBoxImg();
-      console.log("----無事終わり-------");
     }
-    // if (this.props.mdoel !== prevProps.model) {
-    //   var copyDisplayRows = this.state.displayRows;
-
-    //   imageDataService
-    //     .getPerformanceScore(this.props.imageName, this.props.model)
-    //     .then((response) => {
-    //       console.log(response);
-    //       // var copyResponseData = response.data;
-    //       // const data = copyResponseData.map((data) => {
-    //       // //変更必要
-
-    //       // copyDisplayRows[0]  =  {this.props.image, }
-    //     })
-    //     .catch((e) => {
-    //       console.log(e);
-    //     });
-    // }
   }
 
+  // 予測精度のスコアを取得
   getPerformanceScore(image, model, index) {
     imageDataService
       .getPerformanceScore(image, model)
       .then((response) => {
-        console.log(response.data);
         var copyResponseData = response.data;
         var copydisplayRows = this.state.displayRows;
         copydisplayRows[index] = createData(
@@ -105,16 +85,13 @@ class DetectionMode extends Component {
         this.setState({
           displayRows: copydisplayRows,
         });
-        //   const data = copyResponseData.map((data) => {
-        //   //変更必要
-
-        //   copyDisplayRows[0]  =  {this.props.image, }
       })
       .catch((e) => {
         console.log(e);
       });
   }
 
+  // モデルを変更したき
   handleChangeModel(event) {
     var val = event.target.value;
     this.setState({ model: val });
@@ -123,33 +100,24 @@ class DetectionMode extends Component {
     }
   }
 
+  // radioボタン変更した時
   handleChangeRadio(e) {
-    // e.preventDefault();
-    console.log("--handleChangeRadio---------");
     this.setState({ detect: e.target.value });
-    // this.returnBoxImg();
     if (e.target.value === "all") {
       this.returnURLimg(this.props.image);
     } else {
       this.returnFileNNamesDetectBox(this.state.storeBoxList, this.props.image);
     }
-    console.log("----無事終わり-------");
   }
 
+  // ボックス クラス　確信度 などを取得
   returnFileNNamesDetectBox(boxList, imageName) {
-    console.log(" -------returnFileNNamesDetectBox");
-    // boxListを元に戻す！！
-    console.log(boxList);
-    console.log(imageName);
-    console.log(boxList);
     if (boxList[0] === "all") boxList.shift();
     imageDataService
       .getDetectBoxList(boxList, imageName, this.props.model)
       .then((response) => {
-        console.log(response);
         var copyResponseData = response.data;
         const data = copyResponseData.map((data) => {
-          //変更必要
           const detectName = data[6].replace(".png", "");
           return {
             box: data[3],
@@ -158,8 +126,6 @@ class DetectionMode extends Component {
             detect: detectName,
           };
         });
-        console.log("--------databoxclasとか");
-        console.log(data);
         this.setState({
           detectBoxList: data,
         });
@@ -171,8 +137,6 @@ class DetectionMode extends Component {
           }
         });
         boxListdata = boxListdata.filter((v) => v);
-        console.log("-----浄化");
-        console.log(boxListdata);
         this.setState({
           boxList: boxListdata,
           box: boxListdata[0],
@@ -184,12 +148,11 @@ class DetectionMode extends Component {
       });
   }
 
+  // ボックスリストを取得
   returnURLimg(imageName) {
-    console.log(imageName);
     imageDataService
       .getBoxList(this.props.image, this.props.model)
       .then((response) => {
-        console.log(response);
         this.setState({
           boxList: response.data,
           storeBoxList: response.data,
@@ -200,9 +163,9 @@ class DetectionMode extends Component {
       });
   }
 
+  // 全てのボックスが写っている画像のURLを取得
   returnBoxImg() {
     var URL;
-    console.log("allのif");
     URL =
       "http://localhost:4000/box/" +
       this.props.image.replace(".jpg", "") +
@@ -217,21 +180,23 @@ class DetectionMode extends Component {
     this.setState({ boxImageURL: URL });
   }
 
+  // boxが変更された時
   handleChangeBox(event) {
     this.setState({ box: event.target.value });
     this.returnBoxImg(event.target.value);
   }
 
+  // 可視化手法が変更された時
   handleChangeMethod(event) {
     this.setState({ method: event.target.value });
   }
 
+  // クラスが変更された時
   handleChangeClass(event) {
     this.setState({ class: event.target.value });
   }
 
   render() {
-    // this.retrieveConditions(this.props.image);
     return (
       <div className={styles.DataView}>
         <div className={styles.condition}>
@@ -314,9 +279,6 @@ class DetectionMode extends Component {
                   return <option value={model}>{model}</option>;
                 }
               })}
-              {/* <option value="m0001">model0001</option>
-              <option value="m0002">model0002</option>
-              <option value="m0003">model0003</option> */}
             </select>
             <div className={styles.compareDetectALLImg}>
               <h3 className={styles.modelName}>

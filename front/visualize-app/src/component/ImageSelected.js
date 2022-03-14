@@ -25,6 +25,7 @@ class ImageSelected extends Component {
     this.handleClickBatsu = this.handleClickBatsu.bind(this);
   }
 
+  // バツボタン押した時
   handleClickBatsu() {
     this.props.deleteFactorImage(
       this.props.indexTarget,
@@ -32,23 +33,13 @@ class ImageSelected extends Component {
     );
   }
 
+  //　画像名指定してattributes取得
   retrieveConditions(name) {
     this.props.changeImage(name);
 
     ImageDataService.getConditionByName(name)
       .then((response) => {
         console.log(response.data[0].attributes);
-        // const traffic_light = {
-        //   attributes :{
-        //   blue: " go",
-        //   yellow:"slow down",
-        //   red: "stop"}
-        // };
-
-        // console.log(traffic_light.attributes);
-
-        // const data = response.data[0];
-        // console.log(data.weather);
         this.props.changeConditions(response.data[0].attributes);
       })
       .catch((e) => {
@@ -81,9 +72,7 @@ class ImageSelected extends Component {
                 </div>
                 <img
                   src={this.props.allURL}
-                  // className={styles.img}
                   className={styles.img}
-                  // onClick={this.retrieveConditions(this.props.imageName)}
                 ></img>
               </div>
               <div>
@@ -97,26 +86,11 @@ class ImageSelected extends Component {
                 </div>
                 <img
                   src={this.props.grURL}
-                  // className={styles.img}
-                  // className={`${styles.visualize} ${styles.img}`}
                   className={styles.img}
-                  // onClick={this.retrieveConditions(this.props.imageName)}
                 ></img>
               </div>
             </Slider>
-
-            {/* <img
-              src={this.props.allURL}
-              // className={styles.img}
-              className={styles.img}
-              // onClick={this.retrieveConditions(this.props.imageName)}
-            ></img> */}
-
             <span
-              // onClick={this.props.deleteFactorImage(
-              //   this.props.indexTarget,
-              //   this.props.indexFactor
-              // )}
               onClick={this.handleClickBatsu}
               className={styles.batsu}
             >
@@ -130,8 +104,6 @@ class ImageSelected extends Component {
               {this.props.detect === "正検出" && "正検出 "}
               {this.props.detect === "誤検出" && "誤検出 "}
               {this.props.detect === "misclass" && "誤分類 "}
-              {/* {this.props.detect === "正検出" ? "正検出 " : "誤検出　"}
-                {this.props.detect === "正検出" ? "正検出 " : "誤検出　"} */}
                 box:{" "}
                 {this.props.box} <br />
                 {this.props.clas} {this.props.score}
@@ -151,7 +123,6 @@ class ImageSelected extends Component {
                   <img
                     src={this.props.boxURL}
                     className={styles.toumei2}
-                    // alt="可視化手法とクラス"
                   ></img>
                   <img
                     src={this.props.viURL}
@@ -165,26 +136,11 @@ class ImageSelected extends Component {
               <div>
                 <img
                   src={this.props.boxURL}
-                  // className={styles.img}
-                  // className={`${styles.visualize} ${styles.img}`}
                   className={styles.img}
-                  // onClick={this.retrieveConditions(this.props.imageName)}
                 ></img>
               </div>
             </Slider>
-
-            {/* <img
-            src={this.props.allURL}
-            // className={styles.img}
-            className={styles.img}
-            // onClick={this.retrieveConditions(this.props.imageName)}
-          ></img> */}
-
             <span
-              // onClick={this.props.deleteFactorImage(
-              //   this.props.indexTarget,
-              //   this.props.indexFactor
-              // )}
               onClick={this.handleClickBatsu}
               className={styles.batsu}
             >
@@ -192,10 +148,6 @@ class ImageSelected extends Component {
             </span>
           </div>
         )}
-        {/* <span className={styles.round_btn}></span> */}
-        {/* <button onClick={this.retrieveConditions(this.props.imageName)}>
-          テスト
-        </button> */}
       </div>
     );
   }
