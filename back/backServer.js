@@ -1,6 +1,3 @@
-// ExpressはRESTAPIを構築するためのものです
-// body-parserは、リクエストを解析してreq.bodyオブジェクトを作成するのに役立ちます
-// corsは、さまざまなオプションでCORSを有効にするExpressミドルウェアを提供します。
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
