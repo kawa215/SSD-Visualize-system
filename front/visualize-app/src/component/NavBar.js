@@ -7,7 +7,6 @@ export default class NavBar extends Component {
   }
   render() {
     return (
-      //   <div className={styles.NavBar}>
       <div className={styles.NavBar}>
         <a href="#top">SSD Explainer</a>
       </div>

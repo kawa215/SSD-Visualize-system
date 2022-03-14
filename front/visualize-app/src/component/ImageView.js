@@ -20,6 +20,7 @@ class ImageView extends Component {
     this.onLeave = this.onLeave.bind(this);
   }
 
+  //マウスオーバー
   on() {
     this.setState({
       imageUrl:
@@ -31,29 +32,19 @@ class ImageView extends Component {
     });
   }
 
+  // マウスリーブ
   onLeave() {
     this.setState({
       imageUrl: "http://localhost:4000/vals/" + this.props.imageName,
     });
   }
 
+  // 画像名指定　attributes取得
   retrieveConditions(name) {
     this.props.changeImage(name);
 
     ImageDataService.getConditionByName(name)
       .then((response) => {
-        console.log(response.data[0].attributes);
-        // const traffic_light = {
-        //   attributes :{
-        //   blue: "go",
-        //   yellow: "slow down",
-        //   red: "stop"}
-        // };
-
-        // console.log(traffic_light.attributes);
-
-        // const data = response.data[0];
-        // console.log(data.weather);
         this.props.changeConditions(response.data[0].attributes);
       })
       .catch((e) => {
@@ -68,7 +59,6 @@ class ImageView extends Component {
           src={this.state.imageUrl}
           onMouseEnter={this.on}
           onMouseLeave={this.onLeave}
-          // className={styles.img}
           className={styles.img}
           onClick={() =>
             this.props.changeImage(
@@ -78,12 +68,7 @@ class ImageView extends Component {
               this.props.imageTimeofday
             )
           }
-          // onClick={this.retrieveConditions(this.props.imageName)}
-          // onClick={(e) => this.retrieveConditions(this.props.imageName)}
         ></img>
-        {/* <button onClick={this.retrieveConditions(this.props.imageName)}>
-          テスト
-        </button> */}
         <div>{this.props.imageName}</div>
       </div>
     );
@@ -95,7 +80,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  // changeCount: (count) => dispatch(changeCount()),
   changeImage: (name, weather, scene, timeofday) =>
     dispatch(changeImage(name, weather, scene, timeofday)),
   changeConditions: (attributes) => dispatch(changeConditions(attributes)),

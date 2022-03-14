@@ -31,23 +31,16 @@ class SelectionData extends Component {
     this.handleClickFilter = this.handleClickFilter.bind(this);
     this.retrieveImagesOnCondition = this.retrieveImagesOnCondition.bind(this);
     this.addCondition = this.addCondition.bind(this);
-    this.passImage = this.passImage.bind(this);
     this.getALLdetectImageList = this.getALLdetectImageList.bind(this);
   }
 
-  // componentDidMount() {
-  //   this.retrieveImages();
-  // }
-
-  passImage(imageName) {
-    const dispatch = this.props.dispatch;
-    console.log("pass");
-    // dispatch({ type: "ADD_IMAGE", payload: imageName });
-    // dispatch({ type: "CHANGE_RADIO", payload: this.state.radio });
-  }
-
   retrieveImages(model) {
-    if (this.state.radio || this.state.weathers.length || this.state.scenes.length || this.state.timeofdays.length) {
+    if (
+      this.state.radio ||
+      this.state.weathers.length ||
+      this.state.scenes.length ||
+      this.state.timeofdays.length
+    ) {
       this.retrieveImagesOnCondition(
         this.state.weathers,
         this.state.scenes,
@@ -112,8 +105,6 @@ class SelectionData extends Component {
                 console.log(e);
               });
           } else {
-            console.log("this.state.radio ! this.state.radio !== ");
-
             this.setState({ images: response.data });
           }
         })
@@ -121,16 +112,12 @@ class SelectionData extends Component {
           console.log(e);
         });
     } else {
-      //radioのみの時
       if (radio !== "") {
-        console.log("this.getALLdetectImageList");
         this.getALLdetectImageList(model, radio);
       } else {
-        //radioもない時
         this.retrieveImages(model);
       }
     }
-    //条件に合わせて取得
   }
 
   addCondition(val, swi) {
@@ -191,49 +178,19 @@ class SelectionData extends Component {
         this.state.model
       );
     }
-
-    // if (event.target.value === "all") {
-    //   if (
-    //     this.state.weathers.length ||
-    //     this.state.scenes.length ||
-    //     this.state.timeofdays.length
-    //   ) {
-    //     this.retrieveImagesOnCondition(
-    //       this.state.weathers,
-    //       this.state.scenes,
-    //       this.state.timeofdays
-    //     );
-    //   } else {
-    //     this.retrieveImages();
-    //   }
-    // } else {
-    //   this.getALLdetectImageList(this.state.model, event.target.value);
-    // }
-
-    //
   }
 
   getALLdetectImageList(model, sortOfDetect) {
-    console.log(model);
-    console.log(sortOfDetect);
     imageDataService
       .getALLdetectImageList(model, sortOfDetect)
       .then((response) => {
-        //画像名
         const data = response.data;
-        console.log(data);
         const dataJpg = data.map((data) => {
           return data.name + ".jpg";
         });
-        // console.log(dataJpg)
         imageDataService
           .postgetConditionByImagesName(dataJpg)
           .then((response) => {
-            console.log(response.data);
-            // return {
-            //   attributes: response.data,
-            //   name: dat,
-            // };
             this.setState({
               images: response.data,
             });
@@ -250,8 +207,6 @@ class SelectionData extends Component {
   handleChangeWeather(event) {
     var val = event.target.value;
     this.setState({ weather: val });
-
-    //重複しないなら末尾に追加
     if (!this.checkCondition(this.state.weathers, val)) {
       this.setState((state) => {
         return { weathers: [...state.weathers, val] };
@@ -262,17 +217,9 @@ class SelectionData extends Component {
 
   handleChangeModel(event) {
     var val = event.target.value;
-    // this.handleClick(event);
     this.setState({ model: val });
     this.props.changeModel(val);
     this.retrieveImages(val);
-    //重複しないなら末尾に追加
-    // if (!this.checkCondition(this.state.model, val)) {
-    //   this.setState((state) => {
-    //     return { weathers: [...state.weathers, val] };
-    //   });
-    //   this.addCondition(val, 1);
-    // }
   }
 
   handleChangeScene(event) {
@@ -315,14 +262,11 @@ class SelectionData extends Component {
       scenes: [],
       timeofdays: [],
     });
-    // if(this.state.model)this.retrieveImages();
-    
   }
 
   handleClickFilter(swi, e, weather) {
     e.preventDefault();
     const val = weather;
-    console.log(val);
     var ind;
     var cloneWeathers = [...this.state.weathers];
     var cloneScenes = [...this.state.scenes];
@@ -371,9 +315,6 @@ class SelectionData extends Component {
       (cloneWeathers.length || cloneScenes.length || cloneTimeofdays.length) &&
       this.state.model
     ) {
-      console.log(
-        "cloneWeathers.length || cloneScenes.length || cloneTimeofdays.length"
-      );
       this.retrieveImagesOnCondition(
         cloneWeathers,
         cloneScenes,
@@ -386,20 +327,10 @@ class SelectionData extends Component {
     }
   }
 
-  // handleSubmit(event) {
-  //   alert("A name was submitted: " + this.state.value);
-  //   event.preventDefault();
-  // }
-
   render() {
     const a = this.props.count;
     return (
       <div className={styles.SelectionData}>
-        {/* <button onClick={() => this.props.changeCount()} title="setName">
-          おおおお
-        </button>
-        count = {this.props.count}/{this.state.count}/{a}
-        <br /> */}
         <div>
           モデル選択:
           <select
@@ -515,7 +446,6 @@ class SelectionData extends Component {
               name="detect"
               value="all"
               onChange={(e) => this.handleChangeRadio(e)}
-              // onChange={this.handleChangeRadio}
             />
             すべて
           </label>
@@ -524,7 +454,6 @@ class SelectionData extends Component {
               type="radio"
               name="detect"
               value="correct"
-              // onChange={this.handleChangeRadio}
               onChange={(e) => this.handleChangeRadio(e)}
             />
             正検出
@@ -535,7 +464,6 @@ class SelectionData extends Component {
               name="detect"
               value="misdetect"
               onChange={(e) => this.handleChangeRadio(e)}
-              // onChange={this.handleChangeRadio}
             />
             誤検出
           </label>
@@ -559,17 +487,7 @@ class SelectionData extends Component {
         {this.state.images.map((image) => {
           return (
             <div>
-              {/* {" "}
-              {image.attributes.weather}aaa */}
               <ImageView
-                // onClick={() =>
-                //   this.props.changeImage(
-                //     image.name,
-                //     image.attributes.weather,
-                //     image.attributes.scene,
-                //     image.attributes.timeofday
-                //   )
-                // }
                 model={this.state.model}
                 imageName={image.name}
                 imageWeather={image.attributes.weather}
@@ -579,18 +497,6 @@ class SelectionData extends Component {
             </div>
           );
         })}
-        {/* {
-          <div>
-            {this.state.images.map((image) => {
-              return (
-                <div>
-                  {image.name}:{image.attributes.weather}
-                </div>
-              );
-            })}
-          </div>
-        } */}
-        {/* {this.state.radio} */}
       </div>
     );
   }
@@ -599,17 +505,6 @@ class SelectionData extends Component {
 const mapStateToProps = (state) => {
   return { count: state.count };
 };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     countUp: function (value) {
-//       return dispatch(countUp(value));
-//     },
-//     countDown: function (value) {
-//       return dispatch(countDown(value));
-//     },
-//   };
-// };
 
 const mapDispatchToProps = (dispatch) => ({
   changeModel: (model) => dispatch(changeModel(model)),
