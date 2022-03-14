@@ -1,9 +1,8 @@
 const db = require("../models");
 const Val = db.vals;
 
-// Retrieve all Vals from the database.
+// 検証用valデータセット 100枚 取得
 exports.findAll = (req, res) => {
-  console.log("find all");
   var field = { name: 1, attributes: 1, _id: 0 };
   var numofsheets = 100;
   // limit で数を制限
@@ -11,7 +10,6 @@ exports.findAll = (req, res) => {
     .limit(numofsheets)
     .then((data) => {
       res.send(data);
-      // console.log(data);
     })
     .catch((err) => {
       res.status(500).send({
@@ -20,56 +18,8 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Create and Save a new Tutorial
-exports.create = (req, res) => {
-  // Validate request
-  if (!req.body.title) {
-    res.status(400).send({ message: "Content can not be empty!" });
-    return;
-  }
-
-  // Create a Tutorial
-  const tutorial = new Tutorial({
-    title: req.body.title,
-    description: req.body.description,
-    published: req.body.published ? req.body.published : false,
-  });
-
-  // Save Tutorial in the database
-  tutorial
-    .save(tutorial)
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Tutorial.",
-      });
-    });
-};
-// exports.findBoxList = (req, res) => {
-//   console.log("find all");
-//   var field = { name: 1, attributes: 1, _id: 0 };
-//   var numofsheets = 100;
-//   // limit で数を制限
-//   Val.find({}, field)
-//     .limit(numofsheets)
-//     .then((data) => {
-//       res.send(data);
-//       // console.log(data);
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: err.message || "Some error occurred while retrieving vals.",
-//       });
-//     });
-// };
-
-// Retrieve Vals from the database.
+// attributes条件で画像を検索 取得
 exports.findVals = (req, res) => {
-  console.log("find vals");
-  console.log(req.query.weathers);
   var condition;
   if (req.query.weathers) {
     if (req.query.scenes) {
@@ -119,29 +69,11 @@ exports.findVals = (req, res) => {
       }
     }
   }
-  // var condition = {
-  //   //空配列だったら入れたくない
-  //   "attributes.weather": { $in: req.query.weathers },
-  //   "attributes.scene": { $in: req.query.scenes },
-  //   "attributes.timeofday": { $in: req.query.timeofdays },
-  // };
-
-  // var condition = {
-  //   //空配列だったら入れたくない
-  //   "attributes.weather": { $in: req.query.weathers },
-  //   "attributes.scene": { $in: req.query.scenes },
-  //   "attributes.timeofday": { $in: req.query.timeofdays },
-  // };
 
   var field = { name: 1, attributes: 1, _id: 0 };
   var numofsheets = 21;
-  console.log("condition:");
-  console.log(condition);
-  // // limit で数を制限
   Val.find(condition, field)
-    // .limit(numofsheets)
     .then((data) => {
-      console.log("data:" + data);
       res.send(data);
     })
     .catch((err) => {
@@ -151,9 +83,8 @@ exports.findVals = (req, res) => {
     });
 };
 
-// // Find a single Val with an id
+// 画像名を指定 attributesを取得
 exports.findOneCondition = (req, res) => {
-  console.log("findonecondition");
   const condition = {
     name: req.params.name,
   };
@@ -161,7 +92,6 @@ exports.findOneCondition = (req, res) => {
 
   Val.find(condition, field)
     .then((data) => {
-      console.log(data);
       if (!data)
         res.status(404).send({ message: "Not found Val with id " + id });
       else res.send(data[0]);
@@ -171,13 +101,8 @@ exports.findOneCondition = (req, res) => {
     });
 };
 
+// 画像名を指定　画像名とattributesを取得
 exports.findConditions = (req, res) => {
-  console.log("---findconditions--");
-  // condition = {
-  //   "attributes.weather": { $in: req.query.weathers },
-  //   "attributes.scene": { $in: req.query.scenes },
-  // };
-  console.log(req.query.imagesName);
   const condition = {
     name: { $in: req.query.imagesName },
   };
@@ -185,7 +110,6 @@ exports.findConditions = (req, res) => {
 
   Val.find(condition, field)
     .then((data) => {
-      console.log(data);
       if (!data) res.status(404).send({ message: "Not found" });
       else res.send(data[0]);
     })
@@ -194,14 +118,8 @@ exports.findConditions = (req, res) => {
     });
 };
 
+// 画像名を指定 画像名とattributesを取得
 exports.postfindConditions = (req, res) => {
-  console.log("---postfindconditions--");
-  // condition = {
-  //   "attributes.weather": { $in: req.query.weathers },
-  //   "attributes.scene": { $in: req.query.scenes },
-  // };
-  console.log(req.body);
-
   const condition = {
     name: { $in: req.body },
   };
@@ -209,7 +127,6 @@ exports.postfindConditions = (req, res) => {
 
   Val.find(condition, field)
     .then((data) => {
-      console.log(data);
       if (!data) res.status(404).send({ message: "Not found" });
       else res.send(data);
     })
@@ -217,81 +134,3 @@ exports.postfindConditions = (req, res) => {
       res.status(500).send({ message: "Error retrieving Val" });
     });
 };
-
-// // Update a Val by the id in the request
-// exports.update = (req, res) => {
-//   if (!req.body) {
-//     return res.status(400).send({
-//       message: "Data to update can not be empty!",
-//     });
-//   }
-
-//   const id = req.params.id;
-
-//   Val.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-//     .then((data) => {
-//       if (!data) {
-//         res.status(404).send({
-//           message: `Cannot update Val with id=${id}. Maybe Val was not found!`,
-//         });
-//       } else res.send({ message: "Val was updated successfully." });
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: "Error updating Val with id=" + id,
-//       });
-//     });
-// };
-
-// // Delete a Val with the specified id in the request
-// exports.delete = (req, res) => {
-//   const id = req.params.id;
-
-//   Val.findByIdAndRemove(id)
-//     .then((data) => {
-//       if (!data) {
-//         res.status(404).send({
-//           message: `Cannot delete Val with id=${id}. Maybe Val was not found!`,
-//         });
-//       } else {
-//         res.send({
-//           message: "Val was deleted successfully!",
-//         });
-//       }
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message: "Could not delete Val with id=" + id,
-//       });
-//     });
-// };
-
-// // Delete all Vals from the database.
-// exports.deleteAll = (req, res) => {
-//   Val.deleteMany({})
-//     .then((data) => {
-//       res.send({
-//         message: `${data.deletedCount} Vals were deleted successfully!`,
-//       });
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message:
-//           err.message || "Some error occurred while removing all vals.",
-//       });
-//     });
-// };
-
-// // Find all published Vals
-// exports.findAllPublished = (req, res) => {
-//   Val.find({ published: true })
-//     .then((data) => {
-//       res.send(data);
-//     })
-//     .catch((err) => {
-//       res.status(500).send({
-//         message:
-//           err.message || "Some error occurred while retrieving vals.",
-//       });
-//     });
-// };
