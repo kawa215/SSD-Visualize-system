@@ -34,6 +34,7 @@ class SelectionData extends Component {
     this.getALLdetectImageList = this.getALLdetectImageList.bind(this);
   }
 
+  // 条件に合う画像を取得 or 無条件で画像をいくつか取得
   retrieveImages(model) {
     if (
       this.state.radio ||
@@ -63,6 +64,7 @@ class SelectionData extends Component {
     }
   }
 
+  // 条件で画像を取得
   retrieveImagesOnCondition(
     cloneWeathers,
     cloneScenes,
@@ -70,32 +72,19 @@ class SelectionData extends Component {
     radio,
     model
   ) {
-    console.log("retrieveImagesOnCondition");
-    // radioが変更された時も どれか長さがある時
     if (cloneWeathers.length || cloneScenes.length || cloneTimeofdays.length) {
       ImageDataService.getVals(cloneWeathers, cloneScenes, cloneTimeofdays)
         .then((response) => {
           if (this.state.radio !== "all" && this.state.radio !== "") {
             const data = response.data;
-            console.log("resoponse");
-            console.log(data);
-            // this.setState({ images: response.data });
             const dataName = data.map((data) => {
               return data.name;
             });
-            console.log(this.state.model);
-            console.log(this.state.radio);
-            console.log(dataName);
             ImageDataService.getDetectSelectedImageList(model, radio, dataName)
               .then((response) => {
-                //ここから！サーバー側記述
-                console.log(response.data);
                 const datajpg = response.data.map((data) => {
                   return data + ".jpg";
                 });
-                //
-                console.log(datajpg);
-                console.log(data);
                 const images = data.filter((dat) => datajpg.includes(dat.name));
                 this.setState({
                   images: images,
@@ -120,13 +109,12 @@ class SelectionData extends Component {
     }
   }
 
+  // 条件追加
   addCondition(val, swi) {
-    console.log("on condition");
     if (this.state.model) {
       var cloneWeathers;
       var cloneScenes;
       var cloneTimeofdays;
-      //配列取り出し
       // eslint-disable-next-line default-case
       switch (swi) {
         case 1:
@@ -155,18 +143,20 @@ class SelectionData extends Component {
     }
   }
 
+  // 重複チェック
   existsSameValue(a) {
     var s = new Set(a);
     return s.size != a.length;
   }
 
+  // 条件の重複チェック
   checkCondition(condition, newelement) {
-    //重複チェック
     var cloneCondition = [...condition];
     cloneCondition.push(newelement);
     if (this.existsSameValue(cloneCondition)) return true;
   }
 
+  // radioボタン変更された時
   handleChangeRadio(event) {
     this.setState({ radio: event.target.value });
     if (this.state.model) {
@@ -180,6 +170,7 @@ class SelectionData extends Component {
     }
   }
 
+  // モデルと検出パターンを指定　データセットを絞る
   getALLdetectImageList(model, sortOfDetect) {
     imageDataService
       .getALLdetectImageList(model, sortOfDetect)
@@ -204,6 +195,7 @@ class SelectionData extends Component {
       });
   }
 
+  // 天気が変更された時
   handleChangeWeather(event) {
     var val = event.target.value;
     this.setState({ weather: val });
@@ -215,6 +207,7 @@ class SelectionData extends Component {
     }
   }
 
+  // モデルが変更された時
   handleChangeModel(event) {
     var val = event.target.value;
     this.setState({ model: val });
@@ -222,6 +215,7 @@ class SelectionData extends Component {
     this.retrieveImages(val);
   }
 
+  // 場所が変更された時
   handleChangeScene(event) {
     var val = event.target.value;
     this.setState({ scene: val });
@@ -235,6 +229,7 @@ class SelectionData extends Component {
     }
   }
 
+  // 時間が変更されて時
   handleChangeTimeofday(event) {
     var val = event.target.value;
     this.setState({ timeofday: val });
@@ -248,6 +243,7 @@ class SelectionData extends Component {
     }
   }
 
+  // 条件リセット
   handleClick(e) {
     e.preventDefault();
     this.setState({
@@ -264,6 +260,7 @@ class SelectionData extends Component {
     });
   }
 
+  // 条件の重複チェックや追加
   handleClickFilter(swi, e, weather) {
     e.preventDefault();
     const val = weather;
